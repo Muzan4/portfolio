@@ -1,16 +1,26 @@
-# React + Vite
+# Porto - My Developer Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the repository for my personal developer portfolio!
 
-Currently, two official plugins are available:
+## Overview
+This portfolio is built from the ground up using **Vanilla JavaScript, HTML, and CSS**. It focuses on performance, custom animations, and a rich aesthetic without relying on heavy frontend frameworks.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Inspiration & Planning
+The initial planning and visual design for this project took heavy inspiration from **ReactLabs**. I was captivated by their dynamic, cutting-edge interfaces and wanted to achieve a similar level of polish and interactivity.
 
-## React Compiler
+To make this my own and to optimize performance, I took the complex React-based concepts and converted them entirely into **pure Vanilla `.js` code**. Every component, micro-animation, and layout effect was reverse-engineered and rebuilt from scratch. This challenge allowed me to capture the same premium React feel while maintaining complete control over the underlying DOM and execution speed.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technologies Used
+- **HTML5**: For semantic structure and the core foundation.
+- **Vanilla CSS**: Custom styling, 3D transformations, responsive layouts, and intricate micro-animations.
+- **Vanilla JavaScript**: Event handling, state management, and driving the custom interactive effects.
+- **Three.js**: Integrated directly via JS to power the immersive 3D and hyper-speed visual effects on specific pages.
 
-## Expanding the ESLint configuration
+## Getting Started
+To view the portfolio locally, simply clone the repository and open `index.html` in your browser. No build steps or package managers are required!
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+git clone https://github.com/Muzan4/portfolio.git
+cd portfolio
+# Open index.html in your browser
+```
