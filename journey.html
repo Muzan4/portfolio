@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Journey — AABID</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="page-journey" data-page="journey">
+
+  <!-- Shared Global Shell -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div id="scroll-progress"></div>
+  <div id="pt" style="background:#9b30ff; transform: translateY(0%)">
+    <span id="pt-label" style="font-family: 'Anton', sans-serif">JOURNEY</span>
+  </div>
+
+  <div id="fullmenu" aria-label="Navigation">
+    <a href="index.html" class="mi mi-home" data-nav>
+      <span class="mi-num">01</span><span class="mi-name">HOME</span><span class="mi-desc">The Void</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="projects.html" class="mi mi-projects" data-nav>
+      <span class="mi-num">02</span><span class="mi-name">PROJECTS</span><span class="mi-desc">The Terminal</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="journey.html" class="mi mi-journey" data-nav>
+      <span class="mi-num">03</span><span class="mi-name">JOURNEY</span><span class="mi-desc">Synthwave</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="universe.html" class="mi mi-universe" data-nav>
+      <span class="mi-num">04</span><span class="mi-name">UNIVERSE</span><span class="mi-desc">The Ember</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="contact.html" class="mi mi-contact" data-nav>
+      <span class="mi-num">05</span><span class="mi-name">CONNECT</span><span class="mi-desc">Blueprint</span><span class="mi-arrow">↗</span>
+    </a>
+  </div>
+  <button id="menu-btn" aria-label="Open navigation"><span></span><span></span><span></span></button>
+
+  <!-- Page Specific Content -->
+  <div id="hyperspeed-container"></div>
+  
+  <div class="milestones-ui">
+    <header class="journey-header">
+      <p class="journey-eyebrow">03 &nbsp;/&nbsp; 05 &nbsp;·&nbsp; THE PATH</p>
+      <h1 class="journey-title">JOURNEY</h1>
+      <p class="journey-hint">Scroll to warp</p>
+    </header>
+
+    <div class="viewport-3d">
+      <div class="warp-flash" id="warp-flash"></div>
+      <div class="milestone-stage" id="milestone-stage">
+        
+       <article class="milestone-card tl-card" id="milestone-0">
+  <h2 class="tl-year">2022</h2>
+  <p class="tl-title">ISC Board Completion</p>
+  <p class="tl-org">M.U. College</p>
+  <p class="tl-desc">Completed 12th ISC boards with 87%, ranking within the top 10 of the district.</p>
+</article>
+
+        <article class="milestone-card tl-card" id="milestone-1">
+  <h2 class="tl-year">2024</h2>
+  <p class="tl-title">B.Sc. in Computer Science</p>
+  <p class="tl-org">Ramnarain Ruia Autonomous College</p>
+  <p class="tl-desc">Began formal technical education in Computer Science, laying a solid foundation in core computing principles to complement practical development skills.</p>
+</article>
+
+        <article class="milestone-card tl-card" id="milestone-2">
+  <h2 class="tl-year">2025</h2>
+  <p class="tl-title">Hackathon Champion</p>
+  <p class="tl-org">Jai Hind College</p>
+  <p class="tl-desc">Secured the first rank in the college hackathon, building and pitching a functional solution under tight time constraints.</p>
+</article>
+
+        <article class="milestone-card tl-card" id="milestone-3">
+  <h2 class="tl-year">2025</h2>
+  <p class="tl-title">Web & Backend Developer Intern</p>
+  <p class="tl-org">Bhookie (UK-Based Restaurant)</p>
+  <p class="tl-desc">Completed my first formal industry internship managing database infrastructure and developing web solutions for a UK-based restaurant company.</p>
+</article>
+
+        <article class="milestone-card tl-card" id="milestone-4">
+  <h2 class="tl-year">2025</h2>
+  <p class="tl-title">Hackathon Winner (SIES)</p>
+  <p class="tl-org">SIES College</p>
+  <p class="tl-desc">Secured another first-place win, rapidly adapting to new technologies under pressure and solidifying my confidence in full-stack problem-solving.</p>
+</article>
+
+        <article class="milestone-card tl-card" id="milestone-5">
+  <h2 class="tl-year">2025</h2>
+  <p class="tl-title">Freelance Web Developer</p>
+  <p class="tl-org">Zuvika Luxury Salon</p>
+  <p class="tl-desc">Designed, developed, and successfully hosted a professional, full-scale website from scratch, delivering a premium digital presence for a luxury salon client.</p>
+</article>
+
+      </div>
+    </div>
+
+    <div class="journey-footer" id="journey-footer">
+      <a href="universe.html" data-nav
+         style="font-family: 'Anton', sans-serif; font-size: 1.2rem; color: #c084fc; letter-spacing: 2px; text-decoration: none">
+        ENTER THE UNIVERSE ↗
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="hyperspeed.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

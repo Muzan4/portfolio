@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AABID — Portfolio</title>
+  <meta name="description" content="Portfolio of AABID — Designer, Developer, Innovator." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #antigravity-mount {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    #antigravity-mount canvas {
+      pointer-events: all !important;
+    }
+    #antigravity-mount::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, rgba(2,4,9,0.72) 100%),
+        linear-gradient(180deg, rgba(2,4,9,0.55) 0%, transparent 30%, transparent 70%, rgba(2,4,9,0.65) 100%);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="page-home" data-page="home">
+
+  <!-- Shared Global Shell -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div id="scroll-progress"></div>
+  <div id="pt" style="background:#3b93f6; transform: translateY(0%)">
+    <span id="pt-label" style="font-family: 'Orbitron', sans-serif">HOME</span>
+  </div>
+
+  <div id="fullmenu" aria-label="Navigation">
+    <a href="index.html" class="mi mi-home" data-nav>
+      <span class="mi-num">01</span><span class="mi-name">HOME</span><span class="mi-desc">The Void</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="projects.html" class="mi mi-projects" data-nav>
+      <span class="mi-num">02</span><span class="mi-name">PROJECTS</span><span class="mi-desc">The Terminal</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="journey.html" class="mi mi-journey" data-nav>
+      <span class="mi-num">03</span><span class="mi-name">JOURNEY</span><span class="mi-desc">Synthwave</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="universe.html" class="mi mi-universe" data-nav>
+      <span class="mi-num">04</span><span class="mi-name">UNIVERSE</span><span class="mi-desc">The Ember</span><span class="mi-arrow">↗</span>
+    </a>
+    <a href="contact.html" class="mi mi-contact" data-nav>
+      <span class="mi-num">05</span><span class="mi-name">CONNECT</span><span class="mi-desc">Blueprint</span><span class="mi-arrow">↗</span>
+    </a>
+  </div>
+  <button id="menu-btn" aria-label="Open navigation"><span></span><span></span><span></span></button>
+
+  <!-- Page Specific Content -->
+  <div class="matrix-container" id="matrix-bg">
+    <div class="matrix-pattern">
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+    </div>
+    <div class="matrix-pattern">
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+    </div>
+    <div class="matrix-pattern">
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+      <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
+    </div>
+  </div>
+
+  <div id="antigravity-mount" aria-hidden="true"></div>
+  
+  <main class="hero">
+    <canvas id="logo-canvas"></canvas>
+
+    <h1 class="hero-name" id="hero-name" style="opacity: 0; transform: translateY(30px)">
+      <span class="sr-only">AABID</span>
+      <div id="ascii-text-mount" class="ascii-text-mount" aria-hidden="true"></div>
+    </h1>
+
+    <p class="hero-sub" id="hero-sub" style="opacity: 0; transform: translateY(20px)">PORTFOLIO</p>
+
+    <div class="hero-cta" id="hero-cta" style="opacity: 0">
+      <a href="projects.html" data-nav class="btn-primary"><span>View Projects ↗</span></a>
+      <a href="contact.html" data-nav class="btn-ghost"><span>Get In Touch</span></a>
+    </div>
+  </main>
+
+  <nav class="page-tiles" id="page-tiles" style="opacity: 0" aria-label="Pages">
+    <a href="projects.html" data-nav class="page-tile" style="--t-color: #00ff41">PROJECTS</a>
+    <a href="journey.html" data-nav class="page-tile" style="--t-color: #ff006e">JOURNEY</a>
+    <a href="universe.html" data-nav class="page-tile" style="--t-color: #f4a261">UNIVERSE</a>
+    <a href="contact.html" data-nav class="page-tile" style="--t-color: #4cc9f0">CONNECT</a>
+  </nav>
+
+  <div style="position: fixed; right: 2rem; top: 50%; transform: translateY(-50%); z-index: 10; display: flex; flex-direction: column; align-items: center; gap: .8rem; pointer-events: none">
+    <span style="font-family: 'Orbitron', monospace; font-size: .6rem; letter-spacing: 3px; color: rgba(59,147,246,0.5); writing-mode: vertical-rl; transform: rotate(180deg)">01 / 05</span>
+    <div style="width: 1px; height: 3rem; background: rgba(59,147,246,0.2)"></div>
+    <span style="font-family: 'Orbitron', monospace; font-size: .6rem; letter-spacing: 2px; color: rgba(59,147,246,0.3); writing-mode: vertical-rl">HOME</span>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="antigravity.js"></script>
+  <script src="ascii-text.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
