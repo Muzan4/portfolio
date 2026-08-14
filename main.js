@@ -69,12 +69,14 @@ if (pt) {
     }
   }
 }
-window.addEventListener('load', () => {
+const hidePt = () => {
   if (!pt) return;
   requestAnimationFrame(() => {
     pt.style.transform = 'translateY(-100%)';
   });
-});
+};
+window.addEventListener('load', hidePt);
+setTimeout(hidePt, 1500);
 window.addEventListener('pageshow', (e) => {
   if (!pt) return;
   if (e.persisted) {
