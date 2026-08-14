@@ -659,9 +659,9 @@ function initContact() {
     e.preventDefault();
     const btn     = form.querySelector('.submit-btn');
     const btnText = btn.querySelector('span');
-    btnText.textContent = '
+    btnText.textContent = 'TRANSMITTING...';
     setTimeout(() => {
-      btnText.textContent = '
+      btnText.textContent = 'MESSAGE_SENT';
       btn.style.borderColor = '#2ecc71';
       btn.style.color = '#2ecc71';
       form.reset();
