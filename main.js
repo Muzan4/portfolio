@@ -1,12 +1,5 @@
-/* ================================================================
-   MAIN.JS — Shared utilities + page-specific init
-   Detects body[data-page] and dispatches the right init function.
-================================================================ */
-/* ── GLOBAL REFS ── */
+
 const PAGE = document.body.dataset.page || 'home';
-/* ================================================================
-   1. CUSTOM CURSOR
-================================================================ */
 const cur  = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
 let mx = 0, my = 0, rx = 0, ry = 0;
@@ -22,18 +15,12 @@ document.addEventListener('mousemove', e => {
   ring.style.top  = ry + 'px';
   requestAnimationFrame(animRing);
 })();
-/* ================================================================
-   2. SCROLL PROGRESS
-================================================================ */
 const progressBar = document.getElementById('scroll-progress');
 window.addEventListener('scroll', () => {
   const s = document.documentElement.scrollTop;
   const h = document.documentElement.scrollHeight - window.innerHeight;
   if (progressBar && h > 0) progressBar.style.width = (s / h * 100) + '%';
 });
-/* ================================================================
-   3. PAGE TRANSITION SYSTEM
-   ================================================================ */
 const pt = document.getElementById('pt');
 const PAGE_THEMES = {
   'home': { label: 'HOME', color: '#3b93f6', font: 'Orbitron' },
@@ -50,13 +37,11 @@ const FILE_TO_PAGE = {
   'universe.html': 'universe',
   'contact.html': 'contact'
 };
-/* Preload all transition fonts to prevent visible font shifting */
 if (document.fonts) {
   ['900 1em Orbitron', '700 1em "JetBrains Mono"', '400 1em Anton', '900 1em "Playfair Display"', '700 1em "Space Mono"'].forEach(f => {
     document.fonts.load(f);
   });
 }
-// Render invisible elements to force browser layout to fetch the fonts immediately
 const fontLoaderDiv = document.createElement('div');
 fontLoaderDiv.style.position = 'absolute';
 fontLoaderDiv.style.opacity = '0';
@@ -73,7 +58,6 @@ fontLoaderDiv.innerHTML = `
   <span style="font-family: 'Space Mono'; font-weight: 700;">CONNECT</span>
 `;
 document.body.appendChild(fontLoaderDiv);
-/* Set current page theme immediately */
 if (pt) {
   const theme = PAGE_THEMES[PAGE];
   if (theme) {
@@ -85,14 +69,12 @@ if (pt) {
     }
   }
 }
-/* Slide overlay out on page load (reveals new page) */
 window.addEventListener('load', () => {
   if (!pt) return;
   requestAnimationFrame(() => {
     pt.style.transform = 'translateY(-100%)';
   });
 });
-/* Handle back button / BFCache restoration */
 window.addEventListener('pageshow', (e) => {
   if (!pt) return;
   if (e.persisted) {
@@ -113,7 +95,6 @@ window.addEventListener('pageshow', (e) => {
     }));
   }
 });
-/* Intercept all [data-nav] link clicks */
 document.addEventListener('click', e => {
   const link = e.target.closest('[data-nav]');
   if (!link) return;
@@ -123,7 +104,6 @@ document.addEventListener('click', e => {
   if (!href || href === '#' || href === window.location.pathname.split('/').pop()) return;
   e.preventDefault();
   if (!pt) { window.location.href = href; return; }
-  /* Set target page theme on transition overlay */
   const filename = href.split('/').pop();
   const destPage = FILE_TO_PAGE[filename];
   if (destPage && PAGE_THEMES[destPage]) {
@@ -135,7 +115,6 @@ document.addEventListener('click', e => {
       label.style.fontFamily = `"${theme.font}", sans-serif`;
     }
   }
-  /* Reset overlay below viewport, then slide up to cover */
   pt.style.transition = 'none';
   pt.style.transform  = 'translateY(100%)';
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -144,9 +123,6 @@ document.addEventListener('click', e => {
   }));
   setTimeout(() => { window.location.href = href; }, 640);
 });
-/* ================================================================
-   4. FULL-SCREEN NAVIGATION MENU
-================================================================ */
 const menuBtn  = document.getElementById('menu-btn');
 const fullmenu = document.getElementById('fullmenu');
 if (menuBtn && fullmenu) {
@@ -155,7 +131,6 @@ if (menuBtn && fullmenu) {
     menuBtn.classList.toggle('open', open);
     menuBtn.setAttribute('aria-expanded', open);
   });
-  /* Close menu when a link inside it is clicked */
   fullmenu.querySelectorAll('[data-nav]').forEach(l => {
     l.addEventListener('click', () => {
       fullmenu.classList.remove('open');
@@ -163,9 +138,6 @@ if (menuBtn && fullmenu) {
     });
   });
 }
-/* ================================================================
-   5. PAGE-SPECIFIC INIT
-================================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   if (PAGE === 'home')     initHome();
   if (PAGE === 'projects') initProjects();
@@ -173,15 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (PAGE === 'universe') initUniverse();
   if (PAGE === 'contact')  initContact();
 });
-/* ================================================================
-   6. HOME INIT — 3D Logo + Typewriter
-   (Antigravity background is handled by antigravity.js)
-================================================================ */
 let heroAsciiInstance = null;
 function initHome() {
-  /* ── Three.js Logo ── */
   if (typeof THREE === 'undefined') {
-    /* No Three.js — reveal text immediately */
     revealHomeText();
     return;
   }
@@ -226,7 +192,6 @@ function initHome() {
     }
     lr.render(ls, lc2);
   })();
-  /* ── Hero Text Reveal ── */
   function revealHomeText() {
     const name = document.getElementById('hero-name');
     const sub  = document.getElementById('hero-sub');
@@ -265,11 +230,7 @@ function initHome() {
     tick();
   }
 }
-/* ================================================================
-   7. PROJECTS INIT — Terminal boot sequence
-================================================================ */
 function initProjects() {
-  /* Type out terminal intro lines sequentially */
   const lines = document.querySelectorAll('.type-line');
   let delay = 200;
   lines.forEach(line => {
@@ -286,9 +247,6 @@ function initProjects() {
     delay += text.length * 22 + 300;
   });
 }
-/* ================================================================
-   8. JOURNEY INIT — Snap scroll, one milestone at a time
-================================================================ */
 function initJourney() {
   if (typeof HyperspeedApp !== 'undefined') {
     if (typeof HyperspeedApp.init === 'function') {
@@ -302,19 +260,14 @@ function initJourney() {
       }
     }
   }
-  
   const cards = [...document.querySelectorAll('.milestone-card')];
   const footer = document.querySelector('.journey-footer');
   const header = document.querySelector('.journey-header');
   const stage = document.querySelector('.milestone-stage');
   const warpFlash = document.querySelector('.warp-flash');
-  
-  // Set up scrolling
-  const panelCount = cards.length + 2; // intro + cards + footer
+  const panelCount = cards.length + 2; 
   document.body.style.height = (panelCount * 100) + 'vh';
-  const MILESTONE_OFFSET = 1; /* panel 0 = intro */
-
-  // Reconstruct dots if they don't exist
+  const MILESTONE_OFFSET = 1; 
   let dots = [...document.querySelectorAll('.journey-dot')];
   if (dots.length === 0 && cards.length > 0) {
     const nav = document.createElement('div');
@@ -341,14 +294,12 @@ function initJourney() {
     document.body.appendChild(nav);
     dots = [...nav.querySelectorAll('.journey-dot')];
   }
-
   let currentPanel = 0;
   let currentMilestone = null;
   let isAnimating = false;
   let scrollTimeout;
   let pendingPanel = null;
   const progressBar = document.getElementById('scroll-progress');
-
   function getPanelIndex() {
     const h = window.innerHeight;
     const s = document.documentElement.scrollTop;
@@ -364,7 +315,7 @@ function initJourney() {
       card.classList.add('is-hidden');
       card.style.zIndex = '1';
       card.style.pointerEvents = 'none';
-      card.style.animation = ''; // Clear inline animations
+      card.style.animation = ''; 
     });
   }
   function finishAnimation() {
@@ -382,25 +333,22 @@ function initJourney() {
     }
     const card = cards[index];
     card.classList.remove('is-hidden', 'is-exiting');
-    card.style.animation = ''; // Clear inline animation so CSS classes take over
-    void card.offsetWidth; // Force reflow
+    card.style.animation = ''; 
+    void card.offsetWidth; 
     card.classList.add('is-entering');
     card.style.zIndex = '10';
     card.style.pointerEvents = 'all';
-
     if (stage) {
       stage.classList.remove('warping');
       void stage.offsetWidth;
       stage.classList.add('warping');
       setTimeout(() => stage.classList.remove('warping'), 180);
     }
-
     if (warpFlash) {
       void warpFlash.offsetWidth;
       warpFlash.classList.add('flashing');
       requestAnimationFrame(() => requestAnimationFrame(() => warpFlash.classList.remove('flashing')));
     }
-
     let done = false;
     const complete = () => {
       if (done) return;
@@ -418,7 +366,6 @@ function initJourney() {
     card.addEventListener('animationend', onEnd);
     setTimeout(complete, 950);
   }
-
   function startExit(index, thenShow = null) {
     if (index < 0 || index >= cards.length) {
       if (thenShow !== null) startEnter(thenShow);
@@ -432,14 +379,12 @@ function initJourney() {
     card.classList.add('is-exiting');
     card.style.zIndex = '1';
     card.style.pointerEvents = 'none';
-
     if (stage) {
       setTimeout(() => {
         stage.classList.add('warping');
         setTimeout(() => stage.classList.remove('warping'), 180);
       }, 180);
     }
-
     if (warpFlash) {
       setTimeout(() => {
         void warpFlash.offsetWidth;
@@ -447,12 +392,9 @@ function initJourney() {
         requestAnimationFrame(() => requestAnimationFrame(() => warpFlash.classList.remove('flashing')));
       }, 180);
     }
-
-    // Run the next animation concurrently for a smooth crossfade
     if (thenShow !== null) {
       startEnter(thenShow);
     }
-
     let done = false;
     const complete = () => {
       if (done) return;
@@ -503,7 +445,6 @@ function initJourney() {
     }
     if (panel === currentPanel && !force) return;
     currentPanel = panel;
-    // Check if app exists to trigger speedup
     if (typeof HyperspeedApp !== 'undefined') {
        const ev = new CustomEvent('hyperspeed:speedup');
        window.dispatchEvent(ev);
@@ -557,9 +498,6 @@ function initJourney() {
   }, { passive: true });
   onScrollSettle();
 }
-/* ================================================================
-   9. UNIVERSE INIT — Scroll reveal hobby cards
-================================================================ */
 function initUniverse() {
   const cards = document.querySelectorAll('.hobby-card');
   const obs = new IntersectionObserver((entries) => {
@@ -571,8 +509,6 @@ function initUniverse() {
     });
   }, { threshold: .15 });
   cards.forEach(c => obs.observe(c));
-
-  // Variable Proximity on description and hobby texts
   const uniDesc = document.querySelector('.uni-desc');
   if (uniDesc && typeof VariableProximity !== 'undefined') {
     new VariableProximity(uniDesc, {
@@ -580,7 +516,6 @@ function initUniverse() {
       falloff: 'linear'
     });
   }
-
   const hobbyTexts = document.querySelectorAll('.hobby-text');
   if (typeof VariableProximity !== 'undefined') {
     hobbyTexts.forEach(txt => {
@@ -590,8 +525,6 @@ function initUniverse() {
       });
     });
   }
-
-  // Variable Proximity on blockquote
   const uniQuotes = document.querySelectorAll('.uni-quote');
   if (typeof VariableProximity !== 'undefined') {
     uniQuotes.forEach(quote => {
@@ -601,8 +534,6 @@ function initUniverse() {
       });
     });
   }
-
-  // Quote Carousel logic
   const quoteSlides = document.querySelectorAll('.quote-slide');
   if (quoteSlides.length > 1) {
     let currentQuote = 0;
@@ -612,9 +543,7 @@ function initUniverse() {
       prev.style.pointerEvents = 'none';
       prev.style.transform = 'translateY(-10px)';
       prev.classList.remove('is-active');
-      
       currentQuote = (currentQuote + 1) % quoteSlides.length;
-      
       const next = quoteSlides[currentQuote];
       next.style.transform = 'translateY(10px)';
       setTimeout(() => {
@@ -625,29 +554,23 @@ function initUniverse() {
       }, 50);
     }, 60000);
   }
-
-  // --- Ember Particles Background ---
   const emberBg = document.querySelector('.ember-bg');
   if (emberBg && typeof THREE !== 'undefined') {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.z = 200;
-
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     emberBg.appendChild(renderer.domElement);
-
     const particleCount = 150;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const velocities = [];
-
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 400; // x
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 400; // y
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 200; // z
-      
+      positions[i * 3] = (Math.random() - 0.5) * 400; 
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 400; 
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 200; 
       velocities.push({
         y: Math.random() * 0.15 + 0.05,
         x: (Math.random() - 0.5) * 0.05,
@@ -655,10 +578,7 @@ function initUniverse() {
         oscOffset: Math.random() * Math.PI * 2
       });
     }
-
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    // Create a circular glowing texture for embers
     const canvas = document.createElement('canvas');
     canvas.width = 32; canvas.height = 32;
     const ctx = canvas.getContext('2d');
@@ -669,7 +589,6 @@ function initUniverse() {
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 32, 32);
     const texture = new THREE.CanvasTexture(canvas);
-
     const material = new THREE.PointsMaterial({
       size: 4,
       map: texture,
@@ -678,37 +597,29 @@ function initUniverse() {
       depthWrite: false,
       opacity: 0.6
     });
-
     const particles = new THREE.Points(geometry, material);
     scene.add(particles);
-
     let time = 0;
     function animate() {
       requestAnimationFrame(animate);
       time += 1;
-      
       const posAttr = geometry.attributes.position;
       for (let i = 0; i < particleCount; i++) {
         let x = posAttr.getX(i);
         let y = posAttr.getY(i);
         const v = velocities[i];
-
         y += v.y;
         x += Math.sin(time * v.oscSpeed + v.oscOffset) * 0.3 + v.x;
-
         if (y > 200) {
           y = -200;
           x = (Math.random() - 0.5) * 400;
         }
-
         posAttr.setXY(i, x, y);
       }
       posAttr.needsUpdate = true;
-
       renderer.render(scene, camera);
     }
     animate();
-
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -716,16 +627,10 @@ function initUniverse() {
     });
   }
 }
-/* ================================================================
-   10. CONTACT INIT — Form + blueprint reveal
-================================================================ */
 function initContact() {
-  // Faulty Terminal Background
   if (typeof FaultyTerminalApp !== 'undefined' && FaultyTerminalApp.init) {
     FaultyTerminalApp.init();
   }
-
-  // Fuzzy Text Header
   const fuzzyMount = document.getElementById('fuzzy-title-mount');
   if (fuzzyMount && typeof FuzzyText !== 'undefined') {
     new FuzzyText(fuzzyMount, {
@@ -741,8 +646,6 @@ function initContact() {
       hoverIntensity: 0.8
     });
   }
-
-  // Variable Proximity on description text
   const contactDesc = document.querySelector('.contact-desc');
   if (contactDesc && typeof VariableProximity !== 'undefined') {
     new VariableProximity(contactDesc, {
@@ -750,16 +653,15 @@ function initContact() {
       falloff: 'linear'
     });
   }
-
   const form = document.getElementById('contact-form');
   if (!form) return;
   form.addEventListener('submit', e => {
     e.preventDefault();
     const btn     = form.querySelector('.submit-btn');
     const btnText = btn.querySelector('span');
-    btnText.textContent = '// TRANSMITTING...';
+    btnText.textContent = '
     setTimeout(() => {
-      btnText.textContent = '// SIGNAL RECEIVED ✓';
+      btnText.textContent = '
       btn.style.borderColor = '#2ecc71';
       btn.style.color = '#2ecc71';
       form.reset();
@@ -771,11 +673,6 @@ function initContact() {
     }, 1600);
   });
 }
-
-
-/* ================================================================
-   MATRIX CLICK TRIGGER
-================================================================ */
 let matrixTimeout;
 document.addEventListener('click', () => {
   const matrixBg = document.getElementById('matrix-bg');
@@ -787,4 +684,3 @@ document.addEventListener('click', () => {
     }, 2000);
   }
 });
-

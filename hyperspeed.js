@@ -36,14 +36,12 @@
       sticks: 0x03b3c3
     }
   };
-
   const mountainUniforms = { uFreq: { value: new THREE.Vector3(3, 6, 10) }, uAmp: { value: new THREE.Vector3(30, 30, 20) } };
   const xyUniforms = { uFreq: { value: new THREE.Vector2(5, 2) }, uAmp: { value: new THREE.Vector2(25, 15) } };
   const LongRaceUniforms = { uFreq: { value: new THREE.Vector2(2, 3) }, uAmp: { value: new THREE.Vector2(35, 10) } };
   const turbulentUniforms = { uFreq: { value: new THREE.Vector4(4, 8, 8, 1) }, uAmp: { value: new THREE.Vector4(25, 5, 10, 10) } };
   const deepUniforms = { uFreq: { value: new THREE.Vector2(4, 8) }, uAmp: { value: new THREE.Vector2(10, 20) }, uPowY: { value: new THREE.Vector2(20, 2) } };
   let nsin = val => Math.sin(val) * 0.5 + 0.5;
-
   const distortions = {
     turbulentDistortion: {
       uniforms: turbulentUniforms,
@@ -72,14 +70,12 @@
       }
     }
   };
-
   const random = base => Array.isArray(base) ? Math.random() * (base[1] - base[0]) + base[0] : Math.random() * base;
   const pickRandom = arr => Array.isArray(arr) ? arr[Math.floor(Math.random() * arr.length)] : arr;
   function lerp(current, target, speed = 0.1, limit = 0.001) {
     let change = (target - current) * speed;
     return Math.abs(change) < limit ? target - current : change;
   }
-
   const carLightsFragment = `
     #define USE_FOG;
     ${THREE.ShaderChunk['fog_pars_fragment']}
@@ -94,7 +90,6 @@
       ${THREE.ShaderChunk['fog_fragment']}
     }
   `;
-
   const carLightsVertex = `
     #define USE_FOG;
     ${THREE.ShaderChunk['fog_pars_vertex']}
@@ -111,15 +106,12 @@
       float radius = aMetrics.r;
       float myLength = aMetrics.g;
       float speed = aMetrics.b;
-
       transformed.xy *= radius;
       transformed.z *= myLength;
       transformed.z += myLength - mod(uTime * speed + aOffset.z, uTravelLength);
       transformed.xy += aOffset.xy;
-
       float progress = abs(transformed.z / uTravelLength);
       transformed.xyz += getDistortion(progress);
-
       vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.);
       gl_Position = projectionMatrix * mvPosition;
       vUv = uv;
@@ -127,7 +119,6 @@
       ${THREE.ShaderChunk['fog_vertex']}
     }
   `;
-
   class CarLights {
     constructor(webgl, options, colors, speed, fade) {
       this.webgl = webgl;
@@ -145,7 +136,6 @@
       let laneWidth = options.roadWidth / options.lanesPerRoad;
       let aOffset = [], aMetrics = [], aColor = [];
       let colors = Array.isArray(this.colors) ? this.colors.map(c => new THREE.Color(c)) : new THREE.Color(this.colors);
-
       for (let i = 0; i < options.lightPairsPerRoadWay; i++) {
         let radius = random(options.carLightsRadius);
         let length = random(options.carLightsLength);
@@ -157,7 +147,6 @@
         laneX += carShiftX;
         let offsetY = random(options.carFloorSeparation) + radius * 1.3;
         let offsetZ = -random(options.length);
-
         aOffset.push(laneX - carWidth / 2, offsetY, offsetZ);
         aOffset.push(laneX + carWidth / 2, offsetY, offsetZ);
         aMetrics.push(radius, length, speed, radius, length, speed);
@@ -167,7 +156,6 @@
       instanced.setAttribute('aOffset', new THREE.InstancedBufferAttribute(new Float32Array(aOffset), 3, false));
       instanced.setAttribute('aMetrics', new THREE.InstancedBufferAttribute(new Float32Array(aMetrics), 3, false));
       instanced.setAttribute('aColor', new THREE.InstancedBufferAttribute(new Float32Array(aColor), 3, false));
-
       let material = new THREE.ShaderMaterial({
         fragmentShader: carLightsFragment,
         vertexShader: carLightsVertex,
@@ -182,7 +170,6 @@
     }
     update(time) { this.mesh.material.uniforms.uTime.value = time; }
   }
-
   const sideSticksVertex = `
     #define USE_FOG;
     ${THREE.ShaderChunk['fog_pars_vertex']}
@@ -214,7 +201,6 @@
       ${THREE.ShaderChunk['fog_vertex']}
     }
   `;
-
   const sideSticksFragment = `
     #define USE_FOG;
     ${THREE.ShaderChunk['fog_pars_fragment']}
@@ -224,7 +210,6 @@
       ${THREE.ShaderChunk['fog_fragment']}
     }
   `;
-
   class LightsSticks {
     constructor(webgl, options) { this.webgl = webgl; this.options = options; }
     init() {
@@ -235,7 +220,6 @@
       let stickoffset = options.length / (options.totalSideLightSticks - 1);
       const aOffset = [], aColor = [], aMetrics = [];
       let colors = Array.isArray(options.colors.sticks) ? options.colors.sticks.map(c => new THREE.Color(c)) : new THREE.Color(options.colors.sticks);
-
       for (let i = 0; i < options.totalSideLightSticks; i++) {
         let width = random(options.lightStickWidth);
         let height = random(options.lightStickHeight);
@@ -247,7 +231,6 @@
       instanced.setAttribute('aOffset', new THREE.InstancedBufferAttribute(new Float32Array(aOffset), 1, false));
       instanced.setAttribute('aColor', new THREE.InstancedBufferAttribute(new Float32Array(aColor), 3, false));
       instanced.setAttribute('aMetrics', new THREE.InstancedBufferAttribute(new Float32Array(aMetrics), 2, false));
-
       const material = new THREE.ShaderMaterial({
         fragmentShader: sideSticksFragment,
         vertexShader: sideSticksVertex,
@@ -262,7 +245,6 @@
     }
     update(time) { this.mesh.material.uniforms.uTime.value = time; }
   }
-
   const roadBaseFragment = `
     #define USE_FOG;
     varying vec2 vUv; 
@@ -292,18 +274,11 @@
     float laneWidth = 1.0 / uLanes;
     float brokenLineWidth = laneWidth * uBrokenLinesWidthPercentage;
     float laneEmptySpace = 1. - uBrokenLinesLengthPercentage;
-    
-    // Dashed lines in the middle
     float brokenLines = step(1.0 - brokenLineWidth, fract(uv.x * uLanes)) * step(laneEmptySpace, fract(uv.y * 10.0));
-    
-    // Solid borders on extreme left and right
     float leftBorder = 1.0 - step(brokenLineWidth, uv.x);
     float rightBorder = step(1.0 - brokenLineWidth, uv.x);
     float borders = max(leftBorder, rightBorder);
-    
-    // Remove dashed lines from the border areas
     brokenLines = brokenLines * (1.0 - borders);
-    
     color = mix(color, uBrokenLinesColor, brokenLines);
     color = mix(color, uShoulderLinesColor, borders);
   `;
@@ -327,7 +302,6 @@
       ${THREE.ShaderChunk['fog_vertex']}
     }
   `;
-
   class Road {
     constructor(webgl, options) { this.webgl = webgl; this.options = options; this.uTime = { value: 0 }; }
     createPlane(side, width, isRoad) {
@@ -365,16 +339,13 @@
     }
     update(time) { this.uTime.value = time; }
   }
-
   class HyperspeedApp {
     constructor(container, options = {}) {
       this.options = { ...DEFAULT_EFFECT_OPTIONS, ...options, colors: { ...DEFAULT_EFFECT_OPTIONS.colors, ...options.colors } };
       this.options.distortion = distortions[this.options.distortion];
       this.container = container;
-
       const initW = window.innerWidth;
       const initH = window.innerHeight;
-
       this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       this.renderer.setSize(initW, initH);
       this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -385,29 +356,23 @@
       this.renderer.domElement.style.height = '100vh';
       this.renderer.domElement.style.zIndex = '-1';
       container.appendChild(this.renderer.domElement);
-
       this.camera = new THREE.PerspectiveCamera(this.options.fov, initW / initH, 0.1, 10000);
       this.camera.position.z = -5;
       this.camera.position.y = 8;
       this.camera.position.x = 0;
       this.scene = new THREE.Scene();
-
       let fog = new THREE.Fog(this.options.colors.background, this.options.length * 0.2, this.options.length * 500);
       this.scene.fog = fog;
       this.fogUniforms = { fogColor: { value: fog.color }, fogNear: { value: fog.near }, fogFar: { value: fog.far } };
       this.clock = new THREE.Clock();
-
       this.road = new Road(this, this.options);
       this.leftCarLights = new CarLights(this, this.options, this.options.colors.leftCars, this.options.movingAwaySpeed, new THREE.Vector2(0, 1 - this.options.carLightsFade));
       this.rightCarLights = new CarLights(this, this.options, this.options.colors.rightCars, this.options.movingCloserSpeed, new THREE.Vector2(1, 0 + this.options.carLightsFade));
       this.leftSticks = new LightsSticks(this, this.options);
-
       this.fovTarget = this.options.fov;
       this.speedUpTarget = 0;
       this.speedUp = 0;
       this.timeOffset = 0;
-
-      // EffectComposer setup using Three.js built-ins
       if (typeof THREE.EffectComposer !== 'undefined' && typeof THREE.UnrealBloomPass !== 'undefined') {
         this.composer = new THREE.EffectComposer(this.renderer);
         this.renderPass = new THREE.RenderPass(this.scene, this.camera);
@@ -418,10 +383,7 @@
         this.bloomPass.radius = 0.3;
         this.composer.addPass(this.bloomPass);
       }
-
       this.tick = this.tick.bind(this);
-      
-      // Super Epic Scroll listeners
       window.addEventListener('scroll', () => {
         if(this.options.onSpeedUp) this.options.onSpeedUp();
         this.fovTarget = this.options.fovSpeedUp;
@@ -433,7 +395,6 @@
           this.speedUpTarget = 0;
         }, 150);
       }, { passive: true });
-
       window.addEventListener('resize', () => {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -441,7 +402,6 @@
         if (this.composer) this.composer.setSize(window.innerWidth, window.innerHeight);
       });
     }
-
     init() {
       this.road.init();
       this.leftCarLights.init();
@@ -452,7 +412,6 @@
       this.leftSticks.mesh.position.setX(-(this.options.roadWidth + this.options.islandWidth / 2));
       this.tick();
     }
-
     update(delta) {
       let lerpPercentage = Math.exp(-(-60 * Math.log2(1 - 0.1)) * delta);
       this.speedUp += lerp(this.speedUp, this.speedUpTarget, lerpPercentage, 0.00001);
@@ -462,7 +421,6 @@
       this.leftCarLights.update(time);
       this.leftSticks.update(time);
       this.road.update(time);
-
       let updateCamera = false;
       let fovChange = lerp(this.camera.fov, this.fovTarget, lerpPercentage);
       if (fovChange !== 0) {
@@ -480,7 +438,6 @@
       }
       if (updateCamera) this.camera.updateProjectionMatrix();
     }
-
     tick() {
       const delta = this.clock.getDelta();
       this.update(delta);
@@ -492,14 +449,12 @@
       requestAnimationFrame(this.tick);
     }
   }
-
   window.HyperspeedApp = {
     init: function() {
       const container = document.getElementById('hyperspeed-container');
       if (!container) return;
       container.innerHTML = '';
       const isJourney = window.location.pathname.includes('journey');
-      
       const opts = {
         distortion: 'turbulentDistortion',
         speedUp: 3,
@@ -508,15 +463,13 @@
           roadColor: 0x000000,
           islandColor: 0x000000,
           background: 0x000000,
-          shoulderLines: 0xa200ff, // slight purple border glow
-          brokenLines: 0x000000, // completely black bottom
-
+          shoulderLines: 0xa200ff, 
+          brokenLines: 0x000000, 
           leftCars: isJourney ? [0xff006e, 0x8338ec, 0xffbe0b] : [0x00ff41, 0x00ff41, 0x008f11],
           rightCars: isJourney ? [0x3a86ff, 0x00b4d8, 0x90e0ef] : [0x00ff41, 0x00ff41, 0x008f11],
           sticks: isJourney ? 0xff006e : 0x00ff41
         }
       };
-
       const app = new HyperspeedApp(container, opts);
       app.init();
     }

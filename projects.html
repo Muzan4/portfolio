@@ -4,26 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Projects — AABID</title>
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css" />
   <style>
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
   </style>
 </head>
 <body class="page-projects" data-page="projects">
-
-  <!-- Shared Global Shell -->
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
   <div id="scroll-progress"></div>
   <div id="pt" style="background:#00ff41; transform: translateY(0%)">
     <span id="pt-label" style="font-family: 'JetBrains Mono', sans-serif">PROJECTS</span>
   </div>
-
   <div id="fullmenu" aria-label="Navigation">
     <a href="index.html" class="mi mi-home" data-nav>
       <span class="mi-num">01</span><span class="mi-name">HOME</span><span class="mi-desc">The Void</span><span class="mi-arrow">↗</span>
@@ -42,8 +37,6 @@
     </a>
   </div>
   <button id="menu-btn" aria-label="Open navigation"><span></span><span></span><span></span></button>
-
-  <!-- Page Specific Content -->
   <div class="matrix-container" id="matrix-bg">
     <div class="matrix-pattern">
       <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
@@ -76,11 +69,9 @@
       <div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div><div class="matrix-column"></div>
     </div>
   </div>
-
   <div class="terminal-wrap" style="position: relative; z-index: 10;">
     <div class="scanlines"></div>
     <div class="crt-vignette"></div>
-
     <header class="term-topbar">
       <div class="term-dots">
         <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
@@ -91,7 +82,6 @@
       </span>
       <span style="margin-left: auto; color: rgba(0,255,65,.3); font-size: .65rem; letter-spacing: 2px">02 / 05</span>
     </header>
-
     <main class="term-body">
       <div class="term-intro" style="margin-bottom: 2.5rem">
         <div class="term-line" style="opacity: 0">
@@ -99,13 +89,12 @@
           <span class="cmd type-line" data-text="ls -la ./projects --all --verbose">&nbsp;</span>
         </div>
         <div class="term-line" style="margin-top: .8rem; opacity: 0">
-          <span class="comment type-line" data-text="// Found 3 projects — sorted by impact desc">&nbsp;</span>
+          <span class="comment type-line" data-text="// Found 4 projects — sorted by impact desc">&nbsp;</span>
         </div>
         <div class="term-line" style="margin-top: .3rem; opacity: 0">
           <span class="comment type-line" data-text="// Rendering results...">&nbsp;</span>
         </div>
       </div>
-
       <div class="proj-grid">
         <article class="proj-card" id="proj-0">
           <span class="proj-num">01</span>
@@ -120,7 +109,6 @@
           </div>
           <a href="https://bhookie.com/" class="proj-link" target="_blank" rel="noopener noreferrer">$ open ./bhookie <span>→</span></a>
         </article>
-
         <article class="proj-card" id="proj-1">
           <span class="proj-num">02</span>
           <div class="proj-header">
@@ -134,7 +122,6 @@
           </div>
           <a href="https://zuvikasalon.com/" class="proj-link" target="_blank" rel="noopener noreferrer">$ open ./zuvika <span>→</span></a>
         </article>
-
         <article class="proj-card" id="proj-2">
           <span class="proj-num">03</span>
           <div class="proj-header">
@@ -148,10 +135,22 @@
           </div>
           <a href="https://airlines44.web.app/" class="proj-link" target="_blank" rel="noopener noreferrer">$ open ./air-tix <span>→</span></a>
         </article>
+        <article class="proj-card" id="proj-3">
+          <span class="proj-num">04</span>
+          <div class="proj-header">
+            <span class="proj-dir">drwxr-xr-x &nbsp; ches-mate/</span>
+            <span class="proj-status">LIVE</span>
+          </div>
+          <h2 class="proj-title">Ches-Mate</h2>
+          <p class="proj-desc">A beautiful, modern web-based chess application featuring a sleek interface. Play chess directly from your browser. "Just chess it out."</p>
+          <div class="proj-stack">
+            <span class="proj-tag">JavaScript</span><span class="proj-tag">HTML</span><span class="proj-tag">CSS</span><span class="proj-tag">Solo Project</span>
+          </div>
+          <a href="https://muzan4.github.io/ches/" class="proj-link" target="_blank" rel="noopener noreferrer">$ open ./ches-mate <span>→</span></a>
+        </article>
       </div>
-
       <div style="margin-top: 3rem; color: rgba(0,255,65,.3); font-size: .75rem; letter-spacing: 2px; display: flex; gap: 2rem; align-items: center; flex-wrap: wrap">
-        <span>3 directories listed</span>
+        <span>4 directories listed</span>
         <span>0 errors</span>
         <span style="color: rgba(0,255,65,.5)">exit code: 0 ✓</span>
         <span style="margin-left: auto">
@@ -164,7 +163,6 @@
       </div>
     </main>
   </div>
-
   <script src="main.js"></script>
 </body>
 </html>

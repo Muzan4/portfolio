@@ -3,31 +3,25 @@ varying vec2 vUv;
 uniform float uTime;
 uniform float mouse;
 uniform float uEnableWaves;
-
 void main() {
     vUv = uv;
     float time = uTime * 5.;
     float waveFactor = uEnableWaves;
     vec3 transformed = position;
-
     transformed.x += sin(time + position.y) * 0.5 * waveFactor;
     transformed.y += cos(time + position.z) * 0.15 * waveFactor;
     transformed.z += sin(time + position.x) * waveFactor;
-
     gl_Position = projectionMatrix * modelViewMatrix * vec4(transformed, 1.0);
 }
 `;
-
 const fragmentShader = `
 varying vec2 vUv;
 uniform float mouse;
 uniform float uTime;
 uniform sampler2D uTexture;
-
 void main() {
     float time = uTime;
     vec2 pos = vUv;
-    
     float move = sin(time + mouse) * 0.01;
     float r = texture2D(uTexture, pos + cos(time * 2. - time + pos.x) * .01).r;
     float g = texture2D(uTexture, pos + tan(time * .5 + pos.x - time) * .01).g;
@@ -36,13 +30,10 @@ void main() {
     gl_FragColor = vec4(r, g, b, a);
 }
 `;
-
 Math.map = function (n, start, stop, start2, stop2) {
   return ((n - start) / (stop - start)) * (stop2 - start2) + start2;
 };
-
 const PX_RATIO = window.devicePixelRatio || 1;
-
 class AsciiFilter {
   constructor(renderer, { fontSize, fontFamily, charset, invert } = {}) {
     this.renderer = renderer;
@@ -52,29 +43,23 @@ class AsciiFilter {
     this.domElement.style.left = '0';
     this.domElement.style.width = '100%';
     this.domElement.style.height = '100%';
-
     this.pre = document.createElement('pre');
     this.domElement.appendChild(this.pre);
-
     this.canvas = document.createElement('canvas');
     this.context = this.canvas.getContext('2d');
     this.domElement.appendChild(this.canvas);
-
     this.deg = 0;
     this.invert = invert ?? true;
     this.fontSize = fontSize ?? 12;
     this.fontFamily = fontFamily ?? "'Courier New', monospace";
     this.charset = charset ?? ' .\'`^",:;Il!i~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
-
     this.context.webkitImageSmoothingEnabled = false;
     this.context.mozImageSmoothingEnabled = false;
     this.context.msImageSmoothingEnabled = false;
     this.context.imageSmoothingEnabled = false;
-
     this.onMouseMove = this.onMouseMove.bind(this);
     document.addEventListener('mousemove', this.onMouseMove);
   }
-
   setSize(width, height) {
     this.width = width;
     this.height = height;
@@ -83,14 +68,11 @@ class AsciiFilter {
     this.center = { x: width / 2, y: height / 2 };
     this.mouse = { x: this.center.x, y: this.center.y };
   }
-
   reset() {
     this.context.font = `${this.fontSize}px ${this.fontFamily}`;
     const charWidth = this.context.measureText('A').width;
-
     this.cols = Math.floor(this.width / (this.fontSize * (charWidth / this.fontSize)));
     this.rows = Math.floor(this.height / this.fontSize);
-
     this.canvas.width = this.cols;
     this.canvas.height = this.rows;
     this.pre.style.fontFamily = this.fontFamily;
@@ -105,34 +87,27 @@ class AsciiFilter {
     this.pre.style.backgroundAttachment = 'fixed';
     this.pre.style.mixBlendMode = 'difference';
   }
-
   render(scene, camera) {
     this.renderer.render(scene, camera);
-
     const w = this.canvas.width;
     const h = this.canvas.height;
     this.context.clearRect(0, 0, w, h);
     if (this.context && w && h) {
       this.context.drawImage(this.renderer.domElement, 0, 0, w, h);
     }
-
     this.asciify(this.context, w, h);
     this.hue();
   }
-
   onMouseMove(e) {
     this.mouse = { x: e.clientX * PX_RATIO, y: e.clientY * PX_RATIO };
   }
-
   get dx() { return this.mouse.x - this.center.x; }
   get dy() { return this.mouse.y - this.center.y; }
-
   hue() {
     const deg = (Math.atan2(this.dy, this.dx) * 180) / Math.PI;
     this.deg += (deg - this.deg) * 0.075;
     this.domElement.style.filter = `hue-rotate(${this.deg.toFixed(1)}deg)`;
   }
-
   asciify(ctx, w, h) {
     if (w && h) {
       const imgData = ctx.getImageData(0, 0, w, h).data;
@@ -141,12 +116,10 @@ class AsciiFilter {
         for (let x = 0; x < w; x++) {
           const i = x * 4 + y * 4 * w;
           const [r, g, b, a] = [imgData[i], imgData[i + 1], imgData[i + 2], imgData[i + 3]];
-
           if (a === 0) {
             str += ' ';
             continue;
           }
-
           let gray = (0.3 * r + 0.6 * g + 0.1 * b) / 255;
           let idx = Math.floor((1 - gray) * (this.charset.length - 1));
           if (this.invert) idx = this.charset.length - idx - 1;
@@ -157,12 +130,10 @@ class AsciiFilter {
       this.pre.innerHTML = str;
     }
   }
-
   dispose() {
     document.removeEventListener('mousemove', this.onMouseMove);
   }
 }
-
 class CanvasTxt {
   constructor(txt, { fontSize = 200, fontFamily = 'Arial', color = '#fdf9f3' } = {}) {
     this.canvas = document.createElement('canvas');
@@ -173,7 +144,6 @@ class CanvasTxt {
     this.color = color;
     this.font = `600 ${this.fontSize}px ${this.fontFamily}`;
   }
-
   resize() {
     this.context.font = this.font;
     const metrics = this.context.measureText(this.txt);
@@ -182,7 +152,6 @@ class CanvasTxt {
     this.canvas.width = textWidth;
     this.canvas.height = textHeight;
   }
-
   render() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.fillStyle = this.color;
@@ -191,12 +160,10 @@ class CanvasTxt {
     const yPos = 10 + metrics.actualBoundingBoxAscent;
     this.context.fillText(this.txt, 10, yPos);
   }
-
   get width() { return this.canvas.width; }
   get height() { return this.canvas.height; }
   get texture() { return this.canvas; }
 }
-
 class CanvAscii {
   constructor({ text, asciiFontSize, textFontSize, textColor, planeBaseHeight, enableWaves }, containerElem, width, height) {
     this.textString = text;
@@ -208,27 +175,21 @@ class CanvAscii {
     this.width = width;
     this.height = height;
     this.enableWaves = enableWaves;
-
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
     this.camera.position.z = 30;
-
     this.scene = new THREE.Scene();
     this.mouse = { x: this.width / 2, y: this.height / 2 };
-
     this.onMouseMove = this.onMouseMove.bind(this);
   }
-
   async init() {
     try {
       await document.fonts.load('600 200px "IBM Plex Mono"');
       await document.fonts.load('500 12px "IBM Plex Mono"');
     } catch (e) {}
     await document.fonts.ready;
-
     this.setMesh();
     this.setRenderer();
   }
-
   setMesh() {
     this.textCanvas = new CanvasTxt(this.textString, {
       fontSize: this.textFontSize,
@@ -237,15 +198,12 @@ class CanvAscii {
     });
     this.textCanvas.resize();
     this.textCanvas.render();
-
     this.texture = new THREE.CanvasTexture(this.textCanvas.texture);
     this.texture.minFilter = THREE.NearestFilter;
-
     const textAspect = this.textCanvas.width / this.textCanvas.height;
     const baseH = this.planeBaseHeight;
     const planeW = baseH * textAspect;
     const planeH = baseH;
-
     this.geometry = new THREE.PlaneGeometry(planeW, planeH, 36, 36);
     this.material = new THREE.ShaderMaterial({
       vertexShader,
@@ -258,29 +216,23 @@ class CanvAscii {
         uEnableWaves: { value: this.enableWaves ? 1.0 : 0.0 }
       }
     });
-
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
   }
-
   setRenderer() {
     this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true });
     this.renderer.setPixelRatio(1);
     this.renderer.setClearColor(0x000000, 0);
-
     this.filter = new AsciiFilter(this.renderer, {
       fontFamily: 'IBM Plex Mono',
       fontSize: this.asciiFontSize,
       invert: true
     });
-
     this.container.appendChild(this.filter.domElement);
     this.setSize(this.width, this.height);
-
     this.container.addEventListener('mousemove', this.onMouseMove);
     this.container.addEventListener('touchmove', this.onMouseMove);
   }
-
   setSize(w, h) {
     this.width = w;
     this.height = h;
@@ -289,11 +241,9 @@ class CanvAscii {
     this.filter.setSize(w, h);
     this.center = { x: w / 2, y: h / 2 };
   }
-
   load() {
     this.animate();
   }
-
   onMouseMove(evt) {
     const e = evt.touches ? evt.touches[0] : evt;
     const bounds = this.container.getBoundingClientRect();
@@ -301,7 +251,6 @@ class CanvAscii {
     const y = e.clientY - bounds.top;
     this.mouse = { x, y };
   }
-
   animate() {
     const animateFrame = () => {
       this.animationFrameId = requestAnimationFrame(animateFrame);
@@ -309,7 +258,6 @@ class CanvAscii {
     };
     animateFrame();
   }
-
   render() {
     const time = new Date().getTime() * 0.001;
     this.textCanvas.render();
@@ -318,7 +266,6 @@ class CanvAscii {
     this.updateRotation();
     this.filter.render(this.scene, this.camera);
   }
-
   updateRotation() {
     const x = Math.map(this.mouse.y, 0, this.height, 0.5, -0.5);
     const y = Math.map(this.mouse.x, 0, this.width, -0.5, 0.5);
@@ -326,19 +273,14 @@ class CanvAscii {
     this.mesh.rotation.y += (y - this.mesh.rotation.y) * 0.05;
   }
 }
-
-// Global initialization function to be called by main.js
 window.createASCIIText = async function() {
   const container = document.getElementById('ascii-text-mount');
   if (!container) return;
-
-  // Add the required styles dynamically
   if (!document.getElementById('ascii-styles')) {
     const style = document.createElement('style');
     style.id = 'ascii-styles';
     style.innerHTML = `
       @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&display=swap');
-      
       .ascii-text-mount {
         position: relative;
         width: 100%;
@@ -381,11 +323,9 @@ window.createASCIIText = async function() {
     `;
     document.head.appendChild(style);
   }
-
   const rect = container.getBoundingClientRect();
   const width = rect.width > 0 ? rect.width : window.innerWidth;
   const height = rect.height > 0 ? rect.height : 150;
-
   const instance = new CanvAscii({
     text: 'AABID',
     asciiFontSize: 8,
@@ -394,10 +334,8 @@ window.createASCIIText = async function() {
     planeBaseHeight: 12,
     enableWaves: true
   }, container, width, height);
-
   await instance.init();
   instance.load();
-
   window.addEventListener('resize', () => {
     const r = container.getBoundingClientRect();
     if (r.width > 0 && r.height > 0) {

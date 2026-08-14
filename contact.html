@@ -4,24 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact — AABID</title>
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="page-contact" data-page="contact">
-
-  <!-- Shared Global Shell -->
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
   <div id="scroll-progress"></div>
   <div id="pt" style="background:#4cc9f0; transform: translateY(0%)">
     <span id="pt-label" style="font-family: 'Space Mono', sans-serif">CONNECT</span>
   </div>
-
   <div id="fullmenu" aria-label="Navigation">
     <a href="index.html" class="mi mi-home" data-nav>
       <span class="mi-num">01</span><span class="mi-name">HOME</span><span class="mi-desc">The Void</span><span class="mi-arrow">↗</span>
@@ -40,17 +35,12 @@
     </a>
   </div>
   <button id="menu-btn" aria-label="Open navigation"><span></span><span></span><span></span></button>
-
-  <!-- Page Specific Content -->
   <div id="faulty-terminal-container" style="position: fixed; inset: 0; z-index: 0; pointer-events: none"></div>
-  
   <div class="contact-wrap">
-
     <div class="bp-corner bp-tl">AABID.PORTFOLIO<br/>REV 2026.06 · DOC-05</div>
     <div class="bp-corner bp-tr">STATUS: AVAILABLE<br/>LOCATION: GLOBAL</div>
     <div class="bp-corner bp-bl">SCALE 1:1<br/>UNITS: PIXELS</div>
     <div class="bp-corner bp-br">05 / 05<br/>CONTACT MODULE</div>
-
     <aside class="contact-info">
       <div class="contact-eyebrow">Initiate Contact</div>
       <div id="fuzzy-title-mount">
@@ -61,7 +51,6 @@
         developer as cool as me, or just a conversation worth having —
         I'm listening.
       </p>
-
       <div class="contact-coords">
         <div class="coord-row">
           <span class="coord-label">EMAIL</span>
@@ -72,7 +61,6 @@
           <span class="coord-value">IST · UTC+5:30</span>
         </div>
       </div>
-
       <div style="display: flex; gap: 1rem; margin-top: 2.5rem">
         <a href="#" title="GitHub" style="width: 40px; height: 40px; border: 1px solid rgba(76,201,240,.2); display: flex; align-items: center; justify-content: center; color: rgba(76,201,240,.6); transition: all .3s"
           onmouseover="this.style.borderColor='rgba(76,201,240,.6)'; this.style.color='#4cc9f0'; this.style.boxShadow='0 0 20px rgba(76,201,240,.15)'"
@@ -86,7 +74,6 @@
         </a>
       </div>
     </aside>
-
     <div class="contact-form-wrap">
       <p class="form-title">INITIATE_CONTACT</p>
       <form class="contact-form" id="contact-form" novalidate>
@@ -112,7 +99,6 @@
           <span>TRANSMIT_MESSAGE()</span>
         </button>
       </form>
-
       <div style="position: absolute; bottom: 3rem; right: 3rem; opacity: .15; pointer-events: none">
         <div style="position: relative; width: 40px; height: 40px">
           <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #4cc9f0; transform: translateY(-50%)"></div>
@@ -122,7 +108,6 @@
       </div>
     </div>
   </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="fuzzy-text.js"></script>
   <script src="variable-proximity.js"></script>
