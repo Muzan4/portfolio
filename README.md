@@ -3,7 +3,7 @@
 Welcome to the source code of my interactive developer portfolio. This isn't just a website; it's a digital experience designed to showcase my skills, projects, and journey through a highly immersive, space-and-terminal-themed interface.
 
 ## 🚀 Live Demo
-[Check it out here](#https://muzan4.github.io/portfolio/)
+[Check it out here](https://muzan4.github.io/portfolio/)
 
 ## ✨ Features & Inspirations
 
