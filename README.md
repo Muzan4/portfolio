@@ -3,7 +3,7 @@
 Welcome to the source code of my interactive developer portfolio. This isn't just a website; it's a digital experience designed to showcase my skills, projects, and journey through a highly immersive, space-and-terminal-themed interface.
 
 ## 🚀 Live Demo
-[Check it out here](#) *(Update with your actual link if you have one!)*
+[Check it out here](#https://muzan4.github.io/portfolio/index.html)
 
 ## ✨ Features & Inspirations
 
@@ -29,21 +29,6 @@ I used Vanilla JS adaptations of some amazing Reactbits components to power the 
   - `04 / UNIVERSE` — The Ember
   - `05 / CONNECT` — Blueprint
 
-## 🛠️ Local Development
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/porto.git
-   ```
-2. Navigate into the directory:
-   ```bash
-   cd porto
-   ```
-3. Start a local server (e.g., using Python or VS Code Live Server):
-   ```bash
-   python -m http.server 8000
-   ```
-4. Open `http://localhost:8000` in your browser.
 
 ## 💡 What's Next?
 - Further optimizations for mobile layouts.
@@ -51,4 +36,4 @@ I used Vanilla JS adaptations of some amazing Reactbits components to power the 
 - Expanding the "Universe" section with new experiments.
 
 ---
-*Built with passion, coffee, and a lot of JavaScript.*
+*Built with passion, Rio, and a lot of JavaScript.*
