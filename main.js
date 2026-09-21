@@ -657,22 +657,76 @@ function initContact() {
   }
   const form = document.getElementById('contact-form');
   if (!form) return;
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const btn     = form.querySelector('.submit-btn');
     const btnText = btn.querySelector('span');
+
+    const nameInput    = form.querySelector('#name');
+    const emailInput   = form.querySelector('#email');
+    const subjectInput = form.querySelector('#subject');
+    const messageInput = form.querySelector('#message');
+
+    const name    = nameInput ? nameInput.value.trim() : '';
+    const email   = emailInput ? emailInput.value.trim() : '';
+    const subject = subjectInput ? subjectInput.value.trim() : '';
+    const message = messageInput ? messageInput.value.trim() : '';
+
+    if (!name || !email || !message) {
+      const origText = btnText.textContent;
+      btnText.textContent = 'FILL_REQUIRED_FIELDS';
+      btn.style.borderColor = '#ff4d4d';
+      btn.style.color = '#ff4d4d';
+      setTimeout(() => {
+        btnText.textContent = origText;
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 2500);
+      return;
+    }
+
+    btn.disabled = true;
     btnText.textContent = 'TRANSMITTING...';
-    setTimeout(() => {
-      btnText.textContent = 'MESSAGE_SENT';
-      btn.style.borderColor = '#2ecc71';
-      btn.style.color = '#2ecc71';
-      form.reset();
+
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/aabidzaidi@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          _subject: subject ? `[Portfolio Contact] ${subject}` : 'New Message from Portfolio',
+          message: message,
+          _captcha: 'false',
+          _template: 'table'
+        })
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (response.ok && (result.success === 'true' || result.success === true || result.message)) {
+        btnText.textContent = 'MESSAGE_SENT ✓';
+        btn.style.borderColor = '#2ecc71';
+        btn.style.color = '#2ecc71';
+        form.reset();
+      } else {
+        throw new Error(result.message || 'Submission error');
+      }
+    } catch (err) {
+      console.error('Contact submit error:', err);
+      btnText.textContent = 'TRANSMISSION_FAILED';
+      btn.style.borderColor = '#ff4d4d';
+      btn.style.color = '#ff4d4d';
+    } finally {
       setTimeout(() => {
         btnText.textContent = 'TRANSMIT_MESSAGE()';
         btn.style.borderColor = '';
         btn.style.color = '';
+        btn.disabled = false;
       }, 3500);
-    }, 1600);
+    }
   });
 }
 let matrixTimeout;
