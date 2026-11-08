@@ -1,4 +1,4 @@
-
+﻿
 const PAGE = document.body.dataset.page || 'home';
 const cur  = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
@@ -250,6 +250,7 @@ function initProjects() {
   });
 }
 function initJourney() {
+  /* Boot hyperspeed background */
   if (typeof HyperspeedApp !== 'undefined') {
     if (typeof HyperspeedApp.init === 'function') {
       HyperspeedApp.init();
@@ -262,64 +263,209 @@ function initJourney() {
       }
     }
   }
-  const cards = [...document.querySelectorAll('.milestone-card')];
-  const footer = document.querySelector('.journey-footer');
-  const header = document.querySelector('.journey-header');
-  const stage = document.querySelector('.milestone-stage');
+
+  /* DOM refs */
+  const cards     = [...document.querySelectorAll('.milestone-card')];
+  const footer    = document.querySelector('.journey-footer');
+  const header    = document.querySelector('.journey-header');
+  const stage     = document.querySelector('.milestone-stage');
   const warpFlash = document.querySelector('.warp-flash');
-  const panelCount = cards.length + 2; 
+
+  const panelCount       = cards.length + 2;
+  const MILESTONE_OFFSET = 1;
   document.body.style.height = (panelCount * 100) + 'vh';
-  const MILESTONE_OFFSET = 1; 
+
+  /* Build dot-nav */
   let dots = [...document.querySelectorAll('.journey-dot')];
   if (dots.length === 0 && cards.length > 0) {
     const nav = document.createElement('div');
-    nav.style.position = 'fixed';
-    nav.style.right = '2rem';
-    nav.style.top = '50%';
-    nav.style.transform = 'translateY(-50%)';
-    nav.style.display = 'flex';
-    nav.style.flexDirection = 'column';
-    nav.style.gap = '1rem';
-    nav.style.zIndex = '100';
-    cards.forEach((c, i) => {
+    Object.assign(nav.style, {
+      position: 'fixed', right: '2rem', top: '50%',
+      transform: 'translateY(-50%)', display: 'flex',
+      flexDirection: 'column', gap: '1rem', zIndex: '100'
+    });
+    cards.forEach((_, i) => {
       const d = document.createElement('div');
       d.className = 'journey-dot';
       d.dataset.index = i;
-      d.style.width = '8px';
-      d.style.height = '8px';
-      d.style.borderRadius = '50%';
-      d.style.background = 'rgba(255,255,255,0.2)';
-      d.style.cursor = 'pointer';
-      d.style.transition = 'background 0.3s';
+      Object.assign(d.style, {
+        width: '8px', height: '8px', borderRadius: '50%',
+        background: 'rgba(255,255,255,0.2)', cursor: 'pointer',
+        transition: 'background 0.3s, transform 0.3s, box-shadow 0.3s'
+      });
       nav.appendChild(d);
     });
     document.body.appendChild(nav);
     dots = [...nav.querySelectorAll('.journey-dot')];
   }
-  let currentPanel = 0;
+
+  /* State */
+  let currentPanel     = 0;
   let currentMilestone = null;
-  let isAnimating = false;
-  let scrollTimeout;
-  let pendingPanel = null;
-  const progressBar = document.getElementById('scroll-progress');
+  let isAnimating      = false;
+  let pendingPanel     = null;
+  const activeAnims    = new Map();
+  const progressBar    = document.getElementById('scroll-progress');
+
+  /* Utilities */
   function getPanelIndex() {
-    const h = window.innerHeight;
-    const s = document.documentElement.scrollTop;
-    return Math.round(s / h);
+    return Math.round(document.documentElement.scrollTop / window.innerHeight);
   }
   function scrollToMilestone(index) {
-    const targetY = (index + MILESTONE_OFFSET) * window.innerHeight;
-    window.scrollTo({ top: targetY, behavior: 'smooth' });
+    window.scrollTo({ top: (index + MILESTONE_OFFSET) * window.innerHeight, behavior: 'smooth' });
   }
-  function resetCardStates() {
-    cards.forEach(card => {
-      card.classList.remove('is-active', 'is-entering', 'is-exiting');
-      card.classList.add('is-hidden');
-      card.style.zIndex = '1';
-      card.style.pointerEvents = 'none';
-      card.style.animation = ''; 
+
+  function cancelAnim(card) {
+    const a = activeAnims.get(card);
+    if (a) { try { a.cancel(); } catch(e) {} activeAnims.delete(card); }
+  }
+
+  function parkCard(card) {
+    cancelAnim(card);
+    card.classList.remove('is-active', 'is-entering', 'is-exiting');
+    card.classList.add('is-hidden');
+    card.style.pointerEvents = 'none';
+    card.style.zIndex = '1';
+  }
+
+  function resetCardStates() { cards.forEach(parkCard); }
+
+  /* Warp flash — driven by WAAPI so no jank from class toggles */
+  function flashWarp(delayMs) {
+    if (!warpFlash) return;
+    setTimeout(() => {
+      const a = warpFlash.animate([
+        { opacity: 0 },
+        { opacity: 1,   offset: 0.08 },
+        { opacity: 0.55, offset: 0.3  },
+        { opacity: 0 }
+      ], { duration: 460, easing: 'ease-out' });
+    }, delayMs || 0);
+  }
+
+  /* Header soft-dim / restore using WAAPI */
+  function animateHeader(toActive) {
+    if (!header) return;
+    const kf = toActive
+      ? [{ opacity: 0.12, transform: 'scale(0.84) translateY(-16px)', filter: 'blur(4px)' }]
+      : [{ opacity: 1,    transform: 'scale(1) translateY(0px)',       filter: 'blur(0px)' }];
+    header.animate(kf, { duration: 680, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' });
+  }
+
+  /* Dot updates */
+  function updateDots(index) {
+    dots.forEach((d, i) => {
+      const on = i === index;
+      d.style.background = on ? '#9b30ff' : 'rgba(255,255,255,0.18)';
+      d.style.transform  = on ? 'scale(1.3)' : 'scale(1)';
+      d.style.boxShadow  = on ? '0 0 14px rgba(155,48,255,0.9)' : 'none';
     });
   }
+
+  /* ENTER: warp in from behind, physics spring */
+  function animateEnter(card, onDone) {
+    cancelAnim(card);
+    card.classList.remove('is-hidden', 'is-exiting', 'is-active');
+    card.style.pointerEvents = 'none';
+    card.style.zIndex = '10';
+
+    if (stage) {
+      stage.classList.add('warping');
+      setTimeout(() => stage.classList.remove('warping'), 220);
+    }
+    flashWarp(0);
+
+    const anim = card.animate([
+      {
+        offset: 0,
+        opacity: 0,
+        transform: 'translate(-50%,-50%) translateZ(-2200px) scale(0.52)',
+        filter: 'blur(32px) brightness(5) saturate(2.5)'
+      },
+      {
+        offset: 0.28,
+        opacity: 0.7,
+        transform: 'translate(-50%,-50%) translateZ(-520px) scale(0.86)',
+        filter: 'blur(8px) brightness(2.2) saturate(1.5)'
+      },
+      {
+        offset: 0.70,
+        opacity: 1,
+        transform: 'translate(-50%,-50%) translateZ(-45px) scale(0.99)',
+        filter: 'blur(0.4px) brightness(1.1)'
+      },
+      {
+        offset: 1,
+        opacity: 1,
+        transform: 'translate(-50%,-50%) translateZ(0px) scale(1)',
+        filter: 'blur(0px) brightness(1)'
+      }
+    ], {
+      duration: 860,
+      easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      fill: 'forwards'
+    });
+
+    activeAnims.set(card, anim);
+    anim.onfinish = () => {
+      activeAnims.delete(card);
+      card.classList.add('is-active');
+      card.style.pointerEvents = 'all';
+      onDone && onDone();
+    };
+    anim.oncancel = () => activeAnims.delete(card);
+  }
+
+  /* EXIT: warp out toward camera */
+  function animateExit(card, onDone) {
+    cancelAnim(card);
+    card.classList.remove('is-active', 'is-entering');
+    card.style.pointerEvents = 'none';
+    card.style.zIndex = '1';
+
+    flashWarp(140);
+
+    const anim = card.animate([
+      {
+        offset: 0,
+        opacity: 1,
+        transform: 'translate(-50%,-50%) translateZ(0px) scale(1)',
+        filter: 'blur(0px) brightness(1)'
+      },
+      {
+        offset: 0.26,
+        opacity: 0.9,
+        transform: 'translate(-50%,-50%) translateZ(200px) scale(1.05)',
+        filter: 'blur(1px) brightness(1.6)'
+      },
+      {
+        offset: 0.62,
+        opacity: 0.25,
+        transform: 'translate(-50%,-50%) translateZ(680px) scale(1.18)',
+        filter: 'blur(14px) brightness(3.5) saturate(0.4)'
+      },
+      {
+        offset: 1,
+        opacity: 0,
+        transform: 'translate(-50%,-50%) translateZ(1300px) scale(1.38)',
+        filter: 'blur(42px) brightness(6)'
+      }
+    ], {
+      duration: 520,
+      easing: 'cubic-bezier(0.6, 0, 0.9, 0.55)',
+      fill: 'forwards'
+    });
+
+    activeAnims.set(card, anim);
+    anim.onfinish = () => {
+      activeAnims.delete(card);
+      card.classList.add('is-hidden');
+      onDone && onDone();
+    };
+    anim.oncancel = () => activeAnims.delete(card);
+  }
+
+  /* Finish animation + flush pending */
   function finishAnimation() {
     isAnimating = false;
     if (pendingPanel !== null) {
@@ -328,108 +474,28 @@ function initJourney() {
       applyPanel(p, true);
     }
   }
-  function startEnter(index) {
-    if (index < 0 || index >= cards.length) {
-      finishAnimation();
-      return;
-    }
-    const card = cards[index];
-    card.classList.remove('is-hidden', 'is-exiting');
-    card.style.animation = ''; 
-    void card.offsetWidth; 
-    card.classList.add('is-entering');
-    card.style.zIndex = '10';
-    card.style.pointerEvents = 'all';
-    if (stage) {
-      stage.classList.remove('warping');
-      void stage.offsetWidth;
-      stage.classList.add('warping');
-      setTimeout(() => stage.classList.remove('warping'), 180);
-    }
-    if (warpFlash) {
-      void warpFlash.offsetWidth;
-      warpFlash.classList.add('flashing');
-      requestAnimationFrame(() => requestAnimationFrame(() => warpFlash.classList.remove('flashing')));
-    }
-    let done = false;
-    const complete = () => {
-      if (done) return;
-      done = true;
-      card.removeEventListener('animationend', onEnd);
-      card.classList.remove('is-entering');
-      card.classList.add('is-active');
-      card.style.animation = '';
-      finishAnimation();
-    };
-    const onEnd = e => {
-      if (e.target !== card || e.animationName !== 'warp-enter') return;
-      complete();
-    };
-    card.addEventListener('animationend', onEnd);
-    setTimeout(complete, 950);
-  }
-  function startExit(index, thenShow = null) {
-    if (index < 0 || index >= cards.length) {
-      if (thenShow !== null) startEnter(thenShow);
-      else finishAnimation();
-      return;
-    }
-    const card = cards[index];
-    card.classList.remove('is-active', 'is-entering');
-    card.style.animation = '';
-    void card.offsetWidth;
-    card.classList.add('is-exiting');
-    card.style.zIndex = '1';
-    card.style.pointerEvents = 'none';
-    if (stage) {
-      setTimeout(() => {
-        stage.classList.add('warping');
-        setTimeout(() => stage.classList.remove('warping'), 180);
-      }, 180);
-    }
-    if (warpFlash) {
-      setTimeout(() => {
-        void warpFlash.offsetWidth;
-        warpFlash.classList.add('flashing');
-        requestAnimationFrame(() => requestAnimationFrame(() => warpFlash.classList.remove('flashing')));
-      }, 180);
-    }
-    if (thenShow !== null) {
-      startEnter(thenShow);
-    }
-    let done = false;
-    const complete = () => {
-      if (done) return;
-      done = true;
-      card.removeEventListener('animationend', onEnd);
-      card.classList.remove('is-exiting');
-      card.classList.add('is-hidden');
-      card.style.animation = '';
-      if (thenShow === null) finishAnimation();
-    };
-    const onEnd = e => {
-      if (e.target !== card || e.animationName !== 'warp-exit') return;
-      complete();
-    };
-    card.addEventListener('animationend', onEnd);
-    setTimeout(complete, 650);
-  }
+
+  /* Milestone orchestrator */
   function showMilestone(index) {
     if (index === currentMilestone && !isAnimating) return;
-    isAnimating = true;
     const prev = currentMilestone;
     currentMilestone = index;
-    dots.forEach((dot, i) => {
-      dot.style.background = (i === index) ? '#9b30ff' : 'rgba(255,255,255,0.2)';
-    });
-    if (prev !== null) {
-      startExit(prev, index);
+    isAnimating = true;
+    updateDots(index);
+    animateHeader(true);
+
+    if (prev !== null && prev !== index) {
+      animateExit(cards[prev], () => {
+        animateEnter(cards[index], finishAnimation);
+      });
     } else {
       resetCardStates();
-      startEnter(index);
+      animateEnter(cards[index], finishAnimation);
     }
   }
+
   function hideAllMilestones() {
+    animateHeader(false);
     if (currentMilestone === null) {
       resetCardStates();
       return;
@@ -437,68 +503,61 @@ function initJourney() {
     isAnimating = true;
     const prev = currentMilestone;
     currentMilestone = null;
-    dots.forEach(dot => dot.style.background = 'rgba(255,255,255,0.2)');
-    startExit(prev, null);
+    updateDots(-1);
+    animateExit(cards[prev], finishAnimation);
   }
-  function applyPanel(panel, force = false) {
-    if (!force && isAnimating) {
-      pendingPanel = panel;
-      return;
-    }
+
+  /* Panel controller */
+  function applyPanel(panel, force) {
+    if (!force && isAnimating) { pendingPanel = panel; return; }
     if (panel === currentPanel && !force) return;
     currentPanel = panel;
-    if (typeof HyperspeedApp !== 'undefined') {
-       const ev = new CustomEvent('hyperspeed:speedup');
-       window.dispatchEvent(ev);
-    }
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-       const ev = new CustomEvent('hyperspeed:slowdown');
-       window.dispatchEvent(ev);
-    }, 300);
+
+    window.dispatchEvent(new CustomEvent('hyperspeed:speedup'));
+    clearTimeout(applyPanel._t);
+    applyPanel._t = setTimeout(() => window.dispatchEvent(new CustomEvent('hyperspeed:slowdown')), 340);
+
     const progress = panelCount > 1 ? panel / (panelCount - 1) : 0;
     if (progressBar) progressBar.style.width = (progress * 100) + '%';
-    const isIntro = panel === 0;
-    const isOutro = panel === panelCount - 1;
+
+    const isIntro        = panel === 0;
+    const isOutro        = panel === panelCount - 1;
     const milestoneIndex = panel - MILESTONE_OFFSET;
-    if (header) {
-      header.style.opacity = isIntro ? '1' : '0.15';
-    }
+
     if (footer) {
       footer.classList.toggle('visible', isOutro);
       footer.style.pointerEvents = isOutro ? 'all' : 'none';
-      if (isOutro) footer.style.opacity = '1';
-      else footer.style.opacity = '0';
     }
-    if (isIntro) {
-      hideAllMilestones();
-      return;
-    }
-    if (isOutro) {
-      hideAllMilestones();
-      return;
-    }
+
+    if (isIntro || isOutro) { hideAllMilestones(); return; }
+
     if (milestoneIndex >= 0 && milestoneIndex < cards.length) {
       showMilestone(milestoneIndex);
     }
   }
-  function onScrollSettle() {
-    const panel = Math.min(Math.max(getPanelIndex(), 0), panelCount - 1);
-    applyPanel(panel);
-  }
+
+  /* Init */
   resetCardStates();
+  animateHeader(false);
+
   dots.forEach(dot => {
     dot.addEventListener('click', () => {
       const index = Number(dot.dataset.index);
       if (!Number.isNaN(index)) scrollToMilestone(index);
     });
   });
+
   let scrollEndTimer;
   window.addEventListener('scroll', () => {
     clearTimeout(scrollEndTimer);
-    scrollEndTimer = setTimeout(onScrollSettle, 40);
+    scrollEndTimer = setTimeout(() => {
+      const panel = Math.min(Math.max(getPanelIndex(), 0), panelCount - 1);
+      applyPanel(panel);
+    }, 60);
   }, { passive: true });
-  onScrollSettle();
+
+  const panel0 = Math.min(Math.max(getPanelIndex(), 0), panelCount - 1);
+  applyPanel(panel0);
 }
 function initUniverse() {
   const cards = document.querySelectorAll('.hobby-card');

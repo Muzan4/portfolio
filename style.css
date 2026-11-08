@@ -550,13 +550,9 @@ body[data-page="home"],
   position: relative; z-index: 3;
   text-align: center; padding: 4rem 2rem 1rem;
   pointer-events: none; flex-shrink: 0;
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s, filter 0.8s;
+  /* transition handled by WAAPI in JS for maximum smoothness */
   transform-origin: top center;
-}
-body.has-active-card .journey-header {
-  transform: scale(0.8) translateY(-20px);
-  opacity: 0.25;
-  filter: blur(6px);
+  will-change: transform, opacity, filter;
 }
 .page-journey .journey-eyebrow {
   font-family: 'Anton', sans-serif; font-size: .75rem; letter-spacing: 8px;
@@ -585,15 +581,24 @@ body.has-active-card .journey-header {
   position: fixed; inset: 0;
   display: flex; align-items: center; justify-content: center;
   pointer-events: none; z-index: 1;
-  perspective: 900px; perspective-origin: 50% 50%;
+  perspective: 1100px; perspective-origin: 50% 50%;
   overflow: visible;
 }
+
+/* ── Warp flash ── */
 .page-journey .warp-flash {
   position: fixed; inset: 0; z-index: 60; pointer-events: none;
-  background: radial-gradient(ellipse 40% 40% at 50% 50%, rgba(192,132,252,0.55) 0%, rgba(155,48,255,0.25) 40%, transparent 70%);
-  opacity: 0; transition: opacity 0.06s ease-out; mix-blend-mode: screen;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%,
+    rgba(220,170,255,0.65) 0%,
+    rgba(155,48,255,0.30) 45%,
+    transparent 72%);
+  opacity: 0;
+  mix-blend-mode: screen;
+  will-change: opacity;
 }
-.page-journey .warp-flash.flashing { opacity: 1; transition: opacity 0s; }
+.page-journey .warp-flash.flashing { opacity: 1; }
+
+/* ── Stage ── */
 .page-journey .milestone-stage {
   position: relative; width: min(90vw, 520px); height: 340px;
   transform-style: preserve-3d;
@@ -601,52 +606,42 @@ body.has-active-card .journey-header {
 .page-journey .milestone-stage::before {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50;
   background: repeating-conic-gradient(rgba(155,48,255,0) 0deg 3.5deg, rgba(155,48,255,0.07) 3.5deg 4deg);
-  opacity: 0; transition: opacity 0.08s; mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  mix-blend-mode: screen;
 }
 .page-journey .milestone-stage.warping::before { opacity: 1; }
+
+/* ── Cards ── base state (hidden / parked far back) ── */
 .page-journey .milestone-card {
   position: absolute; top: calc(50% - 5px); left: 50%; width: 100%;
   opacity: 0; pointer-events: none;
-  transform: translate(-50%, -50%) translateZ(-1800px);
+  /* GPU-composited initial position */
+  transform: translate(-50%, -50%) translateZ(-2000px) scale(0.6);
   transform-origin: center center;
   will-change: transform, opacity, filter;
   backface-visibility: hidden;
+  /* NO CSS transition here — animations are driven by JS Web Animations API */
 }
-.page-journey .milestone-card.is-hidden {
-  opacity: 0; pointer-events: none;
-  transform: translate(-50%, -50%) translateZ(-1800px);
-  filter: blur(12px) brightness(0.3);
-}
-.page-journey .milestone-card.is-entering {
-  opacity: 1;
-  animation: warp-enter 0.85s cubic-bezier(0.08, 0.9, 0.3, 1) forwards;
-  pointer-events: none;
-}
+
+/* Active card keeps its final WAAPI-committed state */
 .page-journey .milestone-card.is-active {
   opacity: 1; pointer-events: all;
-  transform: translate(-50%, -50%) translateZ(0px);
-  filter: blur(0px) brightness(1);
+  transform: translate(-50%, -50%) translateZ(0px) scale(1);
+  filter: none;
 }
-.page-journey .milestone-card.is-exiting {
-  opacity: 0;
-  animation: warp-exit 0.55s cubic-bezier(0.6, 0, 1, 0.6) forwards;
-  pointer-events: none;
+
+/* Hidden card parked off-screen */
+.page-journey .milestone-card.is-hidden {
+  opacity: 0; pointer-events: none;
+  transform: translate(-50%, -50%) translateZ(-2000px) scale(0.6);
+  filter: blur(14px) brightness(0.2);
 }
-@keyframes warp-enter {
-  0%   { opacity:0; transform:translate(-50%,-50%) translateZ(-2400px); filter:blur(20px) brightness(3) saturate(2); }
-  20%  { opacity:0.6; filter:blur(8px) brightness(2) saturate(1.5); }
-  60%  { opacity:1; transform:translate(-50%,-50%) translateZ(-120px); filter:blur(1px) brightness(1.2); }
-  100% { opacity:1; transform:translate(-50%,-50%) translateZ(0px); filter:blur(0px) brightness(1); }
-}
-@keyframes warp-exit {
-  0%   { opacity:1; transform:translate(-50%,-50%) translateZ(0px); filter:blur(0px) brightness(1); }
-  30%  { opacity:1; transform:translate(-50%,-50%) translateZ(280px); filter:blur(2px) brightness(1.4); }
-  65%  { opacity:0.4; transform:translate(-50%,-50%) translateZ(700px); filter:blur(16px) brightness(2.5) saturate(0.5); }
-  100% { opacity:0; transform:translate(-50%,-50%) translateZ(1100px); filter:blur(40px) brightness(4); }
-}
+
+/* ── Card shell styling ── */
 .page-journey .milestone-card.tl-card { position: absolute; }
 .page-journey .tl-card {
-  background: linear-gradient(135deg, rgba(25,4,58,0.92) 0%, rgba(13,2,33,0.96) 50%, rgba(30,5,60,0.92) 100%);
+  background: linear-gradient(135deg, rgba(25,4,58,0.95) 0%, rgba(13,2,33,0.98) 50%, rgba(30,5,60,0.95) 100%);
   border: 1px solid rgba(155,48,255,0.4);
   border-top: 1px solid rgba(220,160,255,0.5);
   border-left: 1px solid rgba(192,132,252,0.3);
@@ -654,13 +649,17 @@ body.has-active-card .journey-header {
   height: 280px; display: flex; flex-direction: column; justify-content: center;
   backdrop-filter: blur(18px) saturate(1.4);
   overflow: hidden; text-align: center;
-  transition: box-shadow 0.4s;
   clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
-  box-shadow: 0 0 0 1px rgba(155,48,255,0.12), 0 24px 80px rgba(0,0,0,0.7), 0 0 60px rgba(155,48,255,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+  box-shadow:
+    0 0 0 1px rgba(155,48,255,0.12),
+    0 24px 80px rgba(0,0,0,0.75),
+    0 0 60px rgba(155,48,255,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 .page-journey .tl-card::before {
   content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-  background: linear-gradient(135deg, rgba(155,48,255,0.08), rgba(192,132,252,0.04) 40%, transparent 60%),
+  background:
+    linear-gradient(135deg, rgba(155,48,255,0.08), rgba(192,132,252,0.04) 40%, transparent 60%),
     repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(155,48,255,0.025) 3px, rgba(155,48,255,0.025) 4px);
   animation: scanlines-drift 6s linear infinite;
 }
@@ -672,10 +671,26 @@ body.has-active-card .journey-header {
 }
 .page-journey .tl-card > * { position: relative; z-index: 2; }
 @keyframes scanlines-drift { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 0 80px; } }
-.page-journey .milestone-card.tl-card.is-active { animation: card-pulse 3s ease-in-out infinite; }
+
+/* Active card subtle glow pulse */
+.page-journey .milestone-card.tl-card.is-active {
+  animation: card-pulse 3.5s ease-in-out infinite;
+}
 @keyframes card-pulse {
-  0%,100% { box-shadow: 0 0 0 1px rgba(155,48,255,0.12), 0 24px 80px rgba(0,0,0,0.7), 0 0 60px rgba(155,48,255,0.18), inset 0 1px 0 rgba(255,255,255,0.08); }
-  50%     { box-shadow: 0 0 0 1px rgba(155,48,255,0.45), 0 24px 80px rgba(0,0,0,0.7), 0 0 120px rgba(155,48,255,0.45), 0 0 200px rgba(155,48,255,0.18); }
+  0%,100% {
+    box-shadow:
+      0 0 0 1px rgba(155,48,255,0.12),
+      0 24px 80px rgba(0,0,0,0.75),
+      0 0 60px rgba(155,48,255,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(155,48,255,0.5),
+      0 24px 80px rgba(0,0,0,0.75),
+      0 0 130px rgba(155,48,255,0.5),
+      0 0 220px rgba(155,48,255,0.2);
+  }
 }
 .page-journey .journey-dots { display: none; }
 .page-journey .journey-dot {
