@@ -13,7 +13,7 @@
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
   <div id="scroll-progress"></div>
-  <div id="pt" style="background:#f4a261; transform: translateY(0%)">
+  <div id="pt" style="background:#f4a261; transform: translateY(-100%)">
     <span id="pt-label" style="font-family: 'Playfair Display', serif">UNIVERSE</span>
   </div>
   <div id="fullmenu" aria-label="Navigation">
@@ -52,8 +52,56 @@
         Scroll to explore
       </span>
     </section>
+
+    <!-- Portrait & Perspective Showcase -->
+    <section class="uni-portrait-section">
+      <div class="uni-portrait-grid">
+        <div class="uni-portrait-wrapper">
+          <div id="halftone-portrait" class="halftone-portrait-clean">
+            <img class="halftone-fallback-img" src="photostudio_1794388220407.png" alt="Aabid" />
+          </div>
+        </div>
+
+        <div class="uni-portrait-bio">
+          <p class="portrait-eyebrow">01 &nbsp;/&nbsp; THE EXPLORER &nbsp;·&nbsp; IN FOCUS</p>
+          <h2 class="portrait-title">
+  Debugging Reality,<br />
+  <em>One Frame at a Time</em>
+</h2>
+<p class="portrait-lead">
+  Behind every commit is an explorer who treats code like a puzzle and life like a sandbox.
+</p>
+<p class="portrait-desc">
+  Technology is how I build—from full-stack web platforms and event engines to retro horror mechanics built in Godot. But the real spark comes from the spaces between compile runs. Whether I'm waiting for the perfect street cat to step into frame at sunset, navigating survival horror worlds, getting lost in heavy sub-bass lines, or burning off screen-time energy on a biking trail—every unexpected detail feeds back into how I think and create.
+</p>
+
+          <div class="portrait-tags">
+            <span class="portrait-tag"> Quick Learner</span>
+            <span class="portrait-tag"> Feline Observer</span>
+            <span class="portrait-tag"> LLM Whisperer</span>
+            <span class="portrait-tag"> Android & Full-Stack</span>
+          </div>
+
+          <div class="portrait-meta-row">
+            <div class="meta-item">
+              <span class="meta-label">LOCATION</span>
+              <span class="meta-value">Mumbai, India</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">FOCUS</span>
+              <span class="meta-value">Development and Innovation</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">MINDSET</span>
+              <span class="meta-value">Disciplined Curiosity</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="hobbies-section">
-      <p class="hobbies-label">Passions &amp; Pursuits</p>
+      <p class="hobbies-label">02 &nbsp;/&nbsp; Passions &amp; Pursuits</p>
       <div class="hobby-grid">
         <article class="hobby-card" >
           <span class="hobby-icon">📷</span>
@@ -109,6 +157,8 @@
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="variable-proximity.js"></script>
+  <script src="photo-data.js"></script>
+  <script src="halftone-reveal.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

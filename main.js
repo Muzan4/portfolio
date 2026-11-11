@@ -71,12 +71,13 @@ if (pt) {
 }
 const hidePt = () => {
   if (!pt) return;
-  requestAnimationFrame(() => {
-    pt.style.transform = 'translateY(-100%)';
-  });
+  pt.style.transform = 'translateY(-100%)';
 };
+hidePt();
 window.addEventListener('load', hidePt);
-setTimeout(hidePt, 1500);
+document.addEventListener('DOMContentLoaded', hidePt);
+setTimeout(hidePt, 50);
+setTimeout(hidePt, 250);
 window.addEventListener('pageshow', (e) => {
   if (!pt) return;
   if (e.persisted) {
@@ -248,6 +249,20 @@ function initProjects() {
     }, delay);
     delay += text.length * 22 + 300;
   });
+
+  if (typeof TiltedCard !== 'undefined') {
+    TiltedCard.attachAll('.proj-card', {
+      rotateAmplitude: 14,
+      scaleOnHover: 1.04,
+      perspective: 900,
+      radius: 14,
+      smoothness: 0.6,
+      glare: 0.55,
+      glareColor: '#00ff41',
+      shadow: 0.5,
+      parallax: 1.2
+    });
+  }
 }
 function initJourney() {
   /* Boot hyperspeed background */
@@ -570,6 +585,31 @@ function initUniverse() {
     });
   }, { threshold: .15 });
   cards.forEach(c => obs.observe(c));
+
+  const portraitMount = document.getElementById('halftone-portrait');
+  if (portraitMount && typeof HalftoneReveal !== 'undefined') {
+    const portraitSrc = (typeof window !== 'undefined' && window.USER_PORTRAIT_DATA_URL) ? window.USER_PORTRAIT_DATA_URL : 'photostudio_1794388220407.png';
+    new HalftoneReveal(portraitMount, {
+      src: portraitSrc,
+      mode: 'mono',
+      shape: 'dot',
+      cellSize: 5,
+      angle: 45,
+      inkColor: '#f4f1ea',
+      paperColor: '#0f0800',
+      revealRadius: 165,
+      dotScale: 0.95,
+      brightness: 0.02,
+      roughness: 0.45,
+      accentColor: '#1b3a55',
+      softness: 0.45,
+      linger: 1.2,
+      wander: false,
+      clickBurst: false,
+      intro: false,
+      fit: 'contain'
+    });
+  }
   const uniDesc = document.querySelector('.uni-desc');
   if (uniDesc && typeof VariableProximity !== 'undefined') {
     new VariableProximity(uniDesc, {
