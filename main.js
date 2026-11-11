@@ -294,6 +294,7 @@ function initJourney() {
   let dots = [...document.querySelectorAll('.journey-dot')];
   if (dots.length === 0 && cards.length > 0) {
     const nav = document.createElement('div');
+    nav.className = 'journey-dot-nav';
     Object.assign(nav.style, {
       position: 'fixed', right: '2rem', top: '50%',
       transform: 'translateY(-50%)', display: 'flex',

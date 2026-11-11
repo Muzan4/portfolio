@@ -1231,3 +1231,400 @@ body[data-page="home"],
 .page-contact .submit-btn:hover { color: #000d1a; }
 .page-contact .submit-btn:hover::before { transform: translateX(0); }
 .page-contact .submit-btn span { position: relative; z-index: 1; }
+
+/* ==========================================================================
+   Comprehensive Mobile & Tablet Responsiveness
+   ========================================================================== */
+
+/* 1. Touch & Pointer Rules (Hide laggy custom cursors on mobile/touch) */
+@media (hover: none), (pointer: coarse), (max-width: 768px) {
+  #cursor,
+  #cursor-ring {
+    display: none !important;
+  }
+  * {
+    cursor: auto !important;
+  }
+}
+
+/* 2. Global Mobile Navigation & Layout */
+@media (max-width: 768px) {
+  #menu-btn {
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 48px;
+    height: 48px;
+    gap: 4.5px;
+  }
+  #menu-btn span {
+    width: 18px;
+  }
+
+  /* Fullscreen Menu Stack */
+  #fullmenu {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 1fr);
+  }
+  .mi {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 1.8rem;
+    transform: translateX(100%);
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  #fullmenu.open .mi {
+    transform: translateX(0%);
+  }
+  .mi-name {
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+    margin-bottom: 0;
+  }
+  .mi-desc {
+    display: none;
+  }
+  .mi-num {
+    margin-bottom: 0;
+    margin-right: 1rem;
+    font-size: 0.75rem;
+  }
+  .mi-arrow {
+    font-size: 1.2rem;
+  }
+
+  /* Transition curtain font */
+  #pt-label {
+    font-size: clamp(2.2rem, 12vw, 4rem);
+    letter-spacing: 0.1em;
+  }
+
+  /* Home Page */
+  .page-home .hero {
+    padding: 2rem 1.25rem;
+  }
+  .page-home .hero-name {
+    width: 94vw;
+    height: clamp(100px, 24vw, 150px);
+  }
+  .page-home .hero-sub {
+    font-size: 0.82rem;
+    letter-spacing: 4px;
+    margin-top: 0.5rem;
+  }
+  .page-home .hero-cta {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 280px;
+    margin: 1.5rem auto 0;
+    gap: 0.8rem;
+  }
+  .page-home .btn-primary,
+  .page-home .btn-ghost {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .page-home .page-tiles {
+    display: none;
+  }
+
+  /* Projects Page */
+  .page-projects .terminal-wrap {
+    padding: 0 0 4rem;
+  }
+  .page-projects .term-topbar {
+    padding: 0.75rem 1.2rem;
+    gap: 0.6rem;
+  }
+  .page-projects .term-path {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .page-projects .term-body {
+    padding: 1.8rem 1.2rem;
+  }
+  .page-projects .term-intro {
+    margin-bottom: 2rem;
+    font-size: 0.8rem;
+  }
+  .page-projects .term-line {
+    font-size: 0.8rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .page-projects .proj-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .tilted-card__face {
+    padding: 1.4rem 1.2rem;
+  }
+  .page-projects .proj-title {
+    font-size: 1.15rem;
+  }
+  .page-projects .proj-desc {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .page-projects .proj-stack {
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .page-projects .proj-tag {
+    font-size: 0.62rem;
+    padding: 0.2rem 0.5rem;
+  }
+  .page-projects .proj-link {
+    font-size: 0.7rem;
+  }
+  .page-projects .proj-num {
+    font-size: 2.8rem;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  /* Journey Page */
+  .page-journey .journey-header {
+    padding: 3rem 1.2rem 0.5rem;
+  }
+  .page-journey .journey-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+  }
+  .page-journey .journey-title {
+    font-size: clamp(2.6rem, 13vw, 4.5rem);
+    letter-spacing: 0.05em;
+    margin: 0.2rem 0 0.4rem;
+  }
+  .page-journey .journey-hint {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+  .page-journey .milestone-stage {
+    width: 90vw;
+    max-width: 400px;
+    height: auto;
+    min-height: 290px;
+  }
+  .page-journey .tl-card {
+    padding: 1.6rem 1.3rem;
+    height: auto;
+    min-height: 280px;
+  }
+  .page-journey .tl-year {
+    font-size: 2.2rem;
+    margin-bottom: 0.3rem;
+  }
+  .page-journey .tl-title {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+  }
+  .page-journey .tl-org {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.6rem;
+  }
+  .page-journey .tl-desc {
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+  .page-journey .journey-footer {
+    bottom: 1.2rem;
+  }
+  .page-journey .journey-footer a {
+    font-size: 0.95rem;
+    letter-spacing: 1.5px;
+  }
+  .page-journey .journey-dot-nav {
+    right: 0.6rem !important;
+    gap: 0.6rem !important;
+  }
+
+  /* Universe Page */
+  .page-universe .uni-hero {
+    min-height: auto;
+    padding: 6.5rem 1.25rem 3rem;
+    text-align: left;
+  }
+  .page-universe .uni-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 5px;
+    margin-bottom: 1rem;
+  }
+  .page-universe .uni-title {
+    font-size: clamp(2.4rem, 10vw, 4.2rem);
+    margin-bottom: 1.2rem;
+  }
+  .page-universe .uni-desc {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+  .page-universe .uni-portrait-section {
+    padding: 2rem 1.25rem 4rem;
+  }
+  .page-universe .uni-portrait-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .page-universe .uni-portrait-wrapper {
+    max-width: 340px;
+    margin: 0 auto;
+  }
+  .page-universe .halftone-portrait-clean {
+    height: 380px;
+  }
+  .page-universe .portrait-title {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+  .page-universe .portrait-lead {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .page-universe .portrait-desc {
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+  .page-universe .portrait-tags {
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .page-universe .portrait-tag {
+    font-size: 0.68rem;
+    padding: 0.35rem 0.8rem;
+  }
+  .page-universe .portrait-meta-row {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    padding-top: 1.2rem;
+  }
+  .page-universe .hobbies-section {
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  .page-universe .hobby-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .page-universe .hobby-card {
+    padding: 1.8rem 1.4rem;
+  }
+  .page-universe .hobby-name {
+    font-size: 1.4rem;
+  }
+  .page-universe .hobby-text {
+    font-size: 0.85rem;
+    line-height: 1.65;
+  }
+  .page-universe .uni-quote {
+    font-size: clamp(1.2rem, 5vw, 1.8rem) !important;
+  }
+
+  /* Contact Page */
+  .page-contact {
+    min-height: 100dvh;
+    height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .page-contact .contact-wrap {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    padding: 4.8rem 1.25rem 3rem;
+    gap: 1.5rem;
+  }
+  .page-contact .contact-info {
+    padding: 2rem 1.4rem;
+    border-radius: 18px;
+  }
+  .page-contact .contact-title {
+    font-size: 2.2rem;
+    line-height: 1.15;
+  }
+  .page-contact .contact-desc {
+    font-size: 0.92rem;
+    margin-bottom: 1.5rem;
+  }
+  .page-contact .coord-row {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .page-contact .contact-form-wrap {
+    padding: 2rem 1.4rem;
+    border-radius: 18px;
+  }
+  .page-contact .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .page-contact input,
+  .page-contact textarea {
+    font-size: 0.9rem;
+    padding: 0.75rem 0.9rem;
+  }
+  .page-contact .submit-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    padding: 0.85rem 1.5rem;
+  }
+  .page-contact .bp-corner {
+    display: none;
+  }
+}
+
+/* 3. Small Mobile Devices (e.g. iPhone SE, 360px and below) */
+@media (max-width: 480px) {
+  #menu-btn {
+    top: 1rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+  }
+  .page-home .hero {
+    padding: 1.5rem 1rem;
+  }
+  .page-projects .term-body {
+    padding: 1.4rem 0.85rem;
+  }
+  .tilted-card__face {
+    padding: 1.2rem 1rem;
+  }
+  .page-projects .proj-title {
+    font-size: 1.05rem;
+  }
+  .page-journey .journey-header {
+    padding: 2.2rem 1rem 0.5rem;
+  }
+  .page-journey .tl-card {
+    padding: 1.4rem 1.1rem;
+  }
+  .page-universe .uni-hero {
+    padding: 5.5rem 1rem 2.5rem;
+  }
+  .page-universe .uni-portrait-section {
+    padding: 1.5rem 1rem 3rem;
+  }
+  .page-universe .halftone-portrait-clean {
+    height: 320px;
+  }
+  .page-contact .contact-wrap {
+    padding: 4.2rem 1rem 2.5rem;
+  }
+  .page-contact .contact-info,
+  .page-contact .contact-form-wrap {
+    padding: 1.6rem 1.1rem;
+  }
+}

@@ -296,6 +296,7 @@
       };
 
       const onEnter = event => {
+        if (event.pointerType === 'touch') return;
         pointer.inside = true;
         pointer.mouse = event.pointerType === 'mouse' || event.pointerType === 'pen';
         const spot = locate(event, figure);
@@ -307,6 +308,7 @@
       };
 
       const onMove = event => {
+        if (event.pointerType === 'touch') return;
         pointer.mouse = event.pointerType === 'mouse' || event.pointerType === 'pen';
         if (!pointer.inside && pointer.mouse) {
           pointer.inside = true;
@@ -329,6 +331,7 @@
       };
 
       const onDown = event => {
+        if (event.pointerType === 'touch') return;
         press.active = true;
         press.moved = false;
         press.x = event.clientX;
